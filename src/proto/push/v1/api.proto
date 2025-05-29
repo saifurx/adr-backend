@@ -1,0 +1,249 @@
+syntax = "proto3";
+
+package push.v1;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/CRED-CLUB/propeller/push/v1:pushv1";
+option java_multiple_files = true;
+option java_package = "club.cred.propeller.push.v1";
+
+// PushService is used to push events to and from the client
+service PushService {
+  // Establish channel
+  rpc Channel(stream ChannelRequest) returns (stream ChannelResponse) {}
+
+  // SendEventToClientChannel is called to send event to a client
+  rpc SendEventToClientChannel(SendEventToClientChannelRequest) returns (SendEventToClientChannelResponse) {}
+
+  // SendEventToClientDeviceChannel is called to send event to a client device
+  rpc SendEventToClientDeviceChannel(SendEventToClientDeviceChannelRequest) returns (SendEventToClientDeviceChannelResponse) {}
+
+  // SendEventToTopic is called to send event to a topic
+  rpc SendEventToTopic(SendEventToTopicRequest) returns (SendEventToTopicResponse) {}
+
+  // SendEventToTopics is called to send event to multiple topics
+  rpc SendEventToTopics(SendEventToTopicsRequest) returns (SendEventToTopicsResponse) {}
+
+  // GetClientActiveDevices is called to get active devices of a client
+  rpc GetClientActiveDevices(GetClientActiveDevicesRequest) returns (GetClientActiveDevicesResponse) {}
+}
+
+// ChannelRequest is the channel request holder
+message ChannelRequest {
+  oneof request {
+    // channel_event carries main payload
+    ChannelEvent channel_event = 1;
+
+    // channel_event_ack is ack of channel_event
+    ChannelEventAck channel_event_ack = 2;
+
+    // topic_subscription_request to subscribe to a topic
+    TopicSubscriptionRequest topic_subscription_request = 3;
+
+    // topic_unsubscription_request to unsubscribe to a topic
+    TopicUnsubscriptionRequest topic_unsubscription_request = 4;
+  }
+}
+
+// ChannelResponse is the channel response holder
+message ChannelResponse {
+  oneof response {
+    // connect_ack is the ack for channel connect request
+    ConnectAck connect_ack = 1;
+
+    // channel_event carries main payload
+    ChannelEvent channel_event = 2;
+
+    // channel_event_ack is ack of channel_event
+    ChannelEventAck channel_event_ack = 3;
+
+    // topic_subscription_request_ack is ack of topic_subscription_request
+    TopicSubscriptionRequestAck topic_subscription_request_ack = 4;
+
+    // topic_unsubscription_request_ack is ack of topic_unsubscription_request
+    TopicUnsubscriptionRequestAck topic_unsubscription_request_ack = 5;
+  }
+}
+
+// ChannelEvent is the main payload
+message ChannelEvent {
+  // unique event id
+  string unique_id = 1;
+
+  // Topic of the event
+  string topic = 2;
+
+  // event sent and received
+  Event event = 3;
+}
+
+// ConnectResponse is the response client gets on connecting to channel
+message ConnectAck {
+  // Represents a generic Response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+}
+
+// ChannelEventAck is the ack of a ChannelEvent
+message ChannelEventAck {
+  // unique event id
+  string unique_id = 1;
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 2;
+}
+
+// TopicSubscriptionRequest
+message TopicSubscriptionRequest {
+  // topic to subscribe
+  string topic = 1;
+}
+
+// TopicSubscriptionRequest
+message TopicSubscriptionRequestAck {
+  // topic
+  string topic = 1;
+
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 2;
+}
+
+// TopicUnsubscriptionRequest
+message TopicUnsubscriptionRequest {
+  // topic to unsubscribe
+  string topic = 1;
+}
+
+// TopicUnsubscriptionRequestAck
+message TopicUnsubscriptionRequestAck {
+  // topic
+  string topic = 1;
+
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 2;
+}
+
+// GetClientActiveDevicesRequest is the request to get active devices of a client
+message GetClientActiveDevicesRequest {
+  // client_id for which devices to fetch devices
+  string client_id = 1;
+}
+
+// GetClientActiveDevicesResponse is the response of GetClientActiveDevices API
+message GetClientActiveDevicesResponse {
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+
+  // is_client_online is a boolean to indicate if the client is online
+  bool is_client_online = 2;
+
+  // list of active devices of a client
+  repeated Device devices = 3;
+}
+
+// SendEventToClientChannelRequest is the request to send event to a client
+message SendEventToClientChannelRequest {
+  // client_id is client id to which the event is to be sent
+  string client_id = 1;
+
+  // event sent or received
+  Event event = 2;
+}
+
+// SendEventToClientChannelResponse is the response of SendEventToClientChannel API
+message SendEventToClientChannelResponse {
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+}
+
+// SendEventToClientDeviceChannelRequest is the request to send event to a client with a device
+message SendEventToClientDeviceChannelRequest {
+  // client_id is client id to which the event is to be sent
+  string client_id = 1;
+
+  // device_id is the device id to which the event is to be sent
+  string device_id = 2;
+
+  // event sent or received
+  Event event = 3;
+}
+
+// SendEventToClientDeviceChannelResponse is the response of SendEventToClientDeviceChannel API
+message SendEventToClientDeviceChannelResponse {
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+}
+
+
+// SendEventToTopicRequest is the request to send event to a topic
+message SendEventToTopicRequest {
+  // topic to which the event is to be sent
+  string topic = 1;
+
+  // event sent or received
+  Event event = 2;
+}
+
+// SendEventToTopicResponse is the response of SendEventToTopic API
+message SendEventToTopicResponse {
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+}
+
+// SendEventToTopicsRequest is the request to send event to multiple topics
+message SendEventToTopicsRequest {
+  // list of SendEventToTopicRequest
+  repeated SendEventToTopicRequest requests = 1;
+}
+
+// SendEventToTopicsResponse is the response of SendEventToTopics API
+message SendEventToTopicsResponse {
+  // generic response which indicates success/failure status of every request
+  ResponseStatus status = 1;
+}
+
+// Event holds the event structure
+message Event {
+  // Types of event formats like JSON
+  enum Type {
+    // default type is JSON
+    TYPE_JSON_UNSPECIFIED = 0;
+    // proto type
+    TYPE_PROTO = 1;
+  }
+
+  // name of the event
+  string name = 1;
+
+  // format_type is type of event format
+  Type format_type = 2;
+
+  // data which the event carries
+  google.protobuf.Any data = 3;
+}
+
+// Represents a generic Response which indicates success/failure status of every request
+message ResponseStatus {
+  // Indicates whether the request was successful or not
+  bool success = 1;
+
+  // Indicates the error code associated with the request if it was unsuccessful
+  string error_code = 2;
+
+  // Includes additional meta information associated with the unsuccessful request
+  map<string, string> message = 3;
+
+  // Indicates the standard grpc error code associated with the request if it was unsuccessful
+  string error_type = 4;
+}
+
+// Device holds details of a device
+message Device {
+  // unique device id
+  string id = 1;
+
+  // logged in time
+  google.protobuf.Timestamp logged_in_at = 2;
+
+  // device attributes
+  map<string, string> attributes = 3;
+}

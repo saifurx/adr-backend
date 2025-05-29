@@ -1,0 +1,39 @@
+"client_id":"1000.8B02I33ENTR6DAAOAIP6GD1V095WPC",
+"client_secret":"423884ebac1bd878a8da9b3a938873dd7a241a1561",
+"redirect_uri":"https://virturesolve360.com",
+webmaster@virturesolve360.com
+
+
+Step 1: Get the code
+https://accounts.zoho.com/oauth/v2/auth?scope=ZohoMeeting.manageOrg.READ&client_id=1000.8B02I33ENTR6DAAOAIP6GD1V095WPC&response_type=code&redirect_uri=https://virturesolve360.com&access_type=offline&state=opaque&prompt=consent
+
+	ZohoMeeting.manageOrg.READ
+
+	ZohoMeeting.user.READ
+
+	https://accounts.zoho.com/oauth/v2/auth?scope=ZohoMeeting.user.READ&client_id=1000.8B02I33ENTR6DAAOAIP6GD1V095WPC&response_type=code&redirect_uri=https://virturesolve360.com&access_type=offline&state=opaque&prompt=consent
+
+
+Step 2: Get An Refress Token
+
+POST https://accounts.zoho.in/oauth/v2/token
+
+PARAMS
+    "code":"1000.dc29b49cb734f80846455adc0652b8fa.7c66069958ee6961e9e242f5608bf524"
+    "client_id":"1000.XC31MUT4LOQB5WWAG27LBGX1SHCO8D"
+    "client_secret":"f21faacee39952b10ef88337309e1caa2e66ea24a6"
+    "redirect_uri":"http://localhost:3000/meeting"
+    "grant_type":"authorization_code"
+
+
+Step 3:
+
+
+
+curl -X GET 'https://meeting.zoho.com/api/v2/user.json' -H Authorization: Zoho-oauthtoken 1000.2b6642b0dcb93e4c901859bea100024b.66f35eef13d09f1423f1967e259d252a
+
+https://meeting.zoho.in/api/v2/60037943721/user/60038170864
+04:20 PM
+Zuid: 60037943721/60038442294
+04:21 PM
+Zsoid: 60038170864
