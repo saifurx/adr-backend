@@ -37,4 +37,19 @@ public class MSG91Service {
         }
 
     }
+
+    public boolean validateOtpToken(String token) {
+        try {
+            Unirest.setTimeouts(0, 0);
+            HttpResponse<String> response = Unirest.post("https://control.msg91.com/api/v5/widget/verifyAccessToken")
+                    .header("Content-Type", "application/json")
+                    .body("{\r\n  \"authkey\": \"443455AzKezrXwS67e1408aP1\",\r\n  \"access-token\": \""+token+"\"\r\n}")
+                    .asString();
+
+            if(response.getStatus()==200) return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

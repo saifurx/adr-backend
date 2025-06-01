@@ -95,6 +95,7 @@ public class SettingController {
 
     @GetMapping("/template")
     public List<Template> template(@RequestParam(required = false) String type) {
+       logger.info("Finding template by:"+type);
         if(type==null || type.isEmpty())
             return templateRepo.findAll();
         else

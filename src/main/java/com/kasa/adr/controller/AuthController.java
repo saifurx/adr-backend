@@ -84,28 +84,28 @@ public class AuthController {
         return "UP";
     }
 
-    @GetMapping("/case-by-token")
-    public Case getCaseDetailsByToken(@RequestParam String token) {
-        return caseService.getOneCase(token);
-    }
+//    @GetMapping("/case-by-token")
+//    public Case getCaseDetailsByToken(@RequestParam String token) {
+//        return caseService.getOneCase(token);
+//    }
+//
+//    @GetMapping("/random-arbitrator")
+//    public List<User> getRandomArbitrator(@RequestParam String token) {
+//        return userService.getRandomArbitrator();
+//    }
+//
+//    @PostMapping("/update-arbitrator-by-user")
+//    public ResponseEntity<?> updateArbitrator(@RequestParam String token, @RequestParam String arbitratorId) {
+//        CaseAccessToken caseAccessToken = CaseAccessToken.builder().build();
+//        String caseId = caseAccessToken.getCaseId();
+//        caseService.updateArbitratorByDefaulter(token, arbitratorId);
+//        return new ResponseEntity<>("Arbitrator updated!", HttpStatus.OK);
+//    }
 
-    @GetMapping("/random-arbitrator")
-    public List<User> getRandomArbitrator(@RequestParam String token) {
-        return userService.getRandomArbitrator();
-    }
-
-    @PostMapping("/update-arbitrator-by-user")
-    public ResponseEntity<?> updateArbitrator(@RequestParam String token, @RequestParam String arbitratorId) {
-        CaseAccessToken caseAccessToken = CaseAccessToken.builder().build();
-        String caseId = caseAccessToken.getCaseId();
-        caseService.updateArbitratorByDefaulter(token, arbitratorId);
-        return new ResponseEntity<>("Arbitrator updated!", HttpStatus.OK);
-    }
-
-    @GetMapping("/x/{shortUrl}")
-    public ResponseEntity<Void> getAndRedirect(@PathVariable String shortUrl) throws NoSuchFieldException {
-        return xShortService.getAndRedirect(shortUrl);
-    }
+//    @GetMapping("/x/{shortUrl}")
+//    public ResponseEntity<Void> getAndRedirect(@PathVariable String shortUrl) throws NoSuchFieldException {
+//        return xShortService.getAndRedirect(shortUrl);
+//    }
 
 //    @PostMapping("/x")
 //    public ShortUrl createXShort(RequestShortUrl request) {

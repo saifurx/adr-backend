@@ -302,4 +302,12 @@ public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, St
             caseRepository.save(aCase);
         });
     }
+
+    public List<Case> getCaseByMobile(String mobile) {
+        return caseRepository.getCasesByMobile(mobile);
+    }
+
+    public void save(Case aCase) {
+        caseRepository.save(aCase);
+    }
 }

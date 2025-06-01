@@ -32,11 +32,11 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 @Server(
                         description = "TEST ENV",
-                        url = "https://adr-backend.naesta.tech"
+                        url = "https://adr-backend-beta.naesta.tech"
                 ),
                 @Server(
                         description = "PROD ENV",
-                        url = "https://backend.kasaadr.com"
+                        url = "https://adr-backend.naesta.tech"
                 )
         },
         security = {
