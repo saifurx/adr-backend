@@ -1,9 +1,21 @@
+# Build stage
 FROM maven:3.9.9-amazoncorretto-21-debian AS build
-COPY src /home/app/src
-COPY pom.xml /home/app
-RUN mvn -f /home/app/pom.xml clean install package
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-FROM openjdk:21
-COPY --from=build /home/app/target/adr-0.0.1-SNAPSHOT.jar /usr/local/lib/adr-backend.jar
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Runtime stage
+FROM amazoncorretto:21
+WORKDIR /usr/local/lib
+
+# Copy only the final JAR, avoiding unnecessary build artifacts
+COPY --from=build /app/target/*.jar app.jar
+
+# Run the application with optimized JVM settings
+CMD ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+
+# Expose application port
 EXPOSE 7000
-ENTRYPOINT ["java","-jar","/usr/local/lib/adr-backend.jar"]
