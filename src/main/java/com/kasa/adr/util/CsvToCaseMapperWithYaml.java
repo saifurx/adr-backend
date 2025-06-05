@@ -15,7 +15,7 @@ public class CsvToCaseMapperWithYaml {
 
     public static void main(String[] args) {
 
-       // InputStream inputStream = new ClassPathResource("templates/arbitrator-registration.html").getInputStream();
+        // InputStream inputStream = new ClassPathResource("templates/arbitrator-registration.html").getInputStream();
 
         String inputCsvFile = "/home/saif/workspace/java/adr/adr-backend/src/main/resources/templates/sample.csv";  // Input CSV file path
         String errorCsvFile = "/home/saif/workspace/java/adr/adr-backend/src/main/resources/templates/error.csv";  // Output CSV file for errors
@@ -53,7 +53,7 @@ public class CsvToCaseMapperWithYaml {
             }
 
             // Print mapped cases
-            cases.forEach(System.out::println );
+            cases.forEach(System.out::println);
 
         } catch (IOException e) {
             e.printStackTrace();

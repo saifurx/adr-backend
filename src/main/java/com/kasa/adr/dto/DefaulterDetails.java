@@ -5,8 +5,6 @@ import com.kasa.adr.model.Loan;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
-
 @Data
 @Builder
 public class DefaulterDetails {

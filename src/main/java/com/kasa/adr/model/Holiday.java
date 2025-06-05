@@ -13,7 +13,7 @@ import java.time.Instant;
 public class Holiday {
 
     @Id
-            String id;
+    String id;
 
     String name;
     Instant date;

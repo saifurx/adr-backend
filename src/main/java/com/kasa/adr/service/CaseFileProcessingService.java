@@ -19,9 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -67,11 +64,12 @@ public class CaseFileProcessingService {
             uploadDetails.setStatus("In Progress");
             CaseUploadDetails caseUploadDetails = caseUploadDetailsRepository.save(uploadDetails);
             processCSV(caseUploadDetails);
-           // processCSV_second(caseUploadDetails);
+            // processCSV_second(caseUploadDetails);
         }
 
     }
-//  @SneakyThrows
+
+    //  @SneakyThrows
     public void processCSV(CaseUploadDetails caseUploadDetails) {
         logger.info("Processing CaseUploadDetails {}", caseUploadDetails);
         String yaml = caseUploadDetails.getYaml();
@@ -85,12 +83,6 @@ public class CaseFileProcessingService {
             cases = caseProcessor.processCases(yaml, csvPath, missingFile);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Files.deleteIfExists(Path.of(csvPath));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
         caseUploadDetails.setSuccess(cases.size());
         //      caseUploadDetails.setFailed(2);
@@ -105,9 +97,9 @@ public class CaseFileProcessingService {
             // aCase.setAssignedArbitrator(defaultArbitrator);
             aCase.setCaseUploadDetails(uploadDetails.getId());
             CaseHistory caseHistory0 = CaseHistory.builder().descriptions("CSV uploaded by: " + caseUploadDetails.getUploadedBy().getName()).date(now).build();
-            CaseHistory caseHistory1=CaseHistory.builder().descriptions("First Arbitration Notice Send").date(now).build();
+            CaseHistory caseHistory1 = CaseHistory.builder().descriptions("First Arbitration Notice Send").date(now).build();
             // CaseHistory caseHistory2=CaseHistory.builder().descriptions("Second Arbitration Notice Send").date(Instant.now().plus(120, ChronoUnit.MINUTES)).build();
-            aCase.setHistory(Arrays.asList(caseHistory0,caseHistory1));
+            aCase.setHistory(Arrays.asList(caseHistory0, caseHistory1));
         });
         List<Case> finalCases = caseRepository.saveAll(cases);
         try {

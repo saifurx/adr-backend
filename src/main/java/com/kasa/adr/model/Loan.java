@@ -13,7 +13,7 @@ public class Loan {
     private String tenure;
     private String disbursalDate;
     private String additionalDetails;
-    private String  carRegNumber;
+    private String carRegNumber;
     private String engineNumber;
     private String assetDescription;
     private String make;

@@ -87,6 +87,7 @@ public class SettingController {
     public ResponseEntity<Object> allSpecialization(@RequestParam(required = false) String searchStr) {
         return new ResponseEntity<>(specializationRepo.findAll(), HttpStatus.OK);
     }
+
     @DeleteMapping("/specialization/{id}")
     public ResponseEntity<Object> deleteSpecialization(@PathVariable String id) {
         specializationRepo.deleteById(id);
@@ -95,8 +96,8 @@ public class SettingController {
 
     @GetMapping("/template")
     public List<Template> template(@RequestParam(required = false) String type) {
-       logger.info("Finding template by:"+type);
-        if(type==null || type.isEmpty())
+        logger.info("Finding template by:" + type);
+        if (type == null || type.isEmpty())
             return templateRepo.findAll();
         else
             return templateRepo.findAllByType(type);
@@ -105,22 +106,23 @@ public class SettingController {
     @PostMapping("/template")
     public ResponseEntity<Object> template(@RequestBody TemplateRequest templateRequest) {
         User user = userService.findUserById(templateRequest.getClaimant());
-        Template template= Template.builder().type(templateRequest.getType()).subject(templateRequest.getSubject()).text(templateRequest.getText()).name(templateRequest.getName()).status(true).createdAt(Instant.now()).claimantAdminUser(user).build();
+        Template template = Template.builder().type(templateRequest.getType()).subject(templateRequest.getSubject()).text(templateRequest.getText()).name(templateRequest.getName()).status(true).createdAt(Instant.now()).claimantAdminUser(user).build();
         return new ResponseEntity<>(templateRepo.save(template), HttpStatus.OK);
     }
+
     @PatchMapping("/template/{id}")
-    public ResponseEntity<Object> updateTemplate(@RequestBody TemplateRequest templateRequest,@PathVariable String id) {
+    public ResponseEntity<Object> updateTemplate(@RequestBody TemplateRequest templateRequest, @PathVariable String id) {
         User user = userService.findUserById(templateRequest.getClaimant());
-        Template template= Template.builder()
-                            .id(id)
-                            .name(templateRequest.getName())
-                            .type(templateRequest.getType())
-                            .subject(templateRequest.getSubject())
-                            .text(templateRequest.getText())
-                            .status(true)
-                            .claimantAdminUser(user)
-                            .createdAt(Instant.now())
-                            .build();
+        Template template = Template.builder()
+                .id(id)
+                .name(templateRequest.getName())
+                .type(templateRequest.getType())
+                .subject(templateRequest.getSubject())
+                .text(templateRequest.getText())
+                .status(true)
+                .claimantAdminUser(user)
+                .createdAt(Instant.now())
+                .build();
 
         return new ResponseEntity<>(templateRepo.save(template), HttpStatus.OK);
     }

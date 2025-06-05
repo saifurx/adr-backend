@@ -7,8 +7,8 @@ import com.kasa.adr.model.Template;
 import com.kasa.adr.repo.CaseRepository;
 import com.kasa.adr.repo.TemplateRepo;
 import com.kasa.adr.service.external.EmailService;
-import com.kasa.adr.service.external.S3Service;
 import com.kasa.adr.service.external.MSG91Service;
+import com.kasa.adr.service.external.S3Service;
 import com.kasa.adr.util.CommonUtils;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.jsoup.Jsoup;
@@ -94,7 +94,7 @@ public class VenkyNotificationService {
         String to = aCase.getEmail();
         TemplateMapObject templateMapObject = CommonUtils.getTemplateMapObject(aCase);
         try {
-            String link = frontendUrl+"/assign-random-arbitrator?token=" + aCase.getId();// + CommonUtils.createBase64encodeToken(aCase.getId());
+            String link = frontendUrl + "/assign-random-arbitrator?token=" + aCase.getId();// + CommonUtils.createBase64encodeToken(aCase.getId());
             String emailTemplateText = emailTemplate.getText();
             emailTemplateText = emailTemplateText.replace("{{chooseArbitratorLink}}", link);
             emailTemplateText = CommonUtils.replacePlaceholders(emailTemplateText, templateMapObject);
@@ -124,8 +124,8 @@ public class VenkyNotificationService {
         try {
             TemplateMapObject templateMapObject = CommonUtils.getTemplateMapObject(aCase);
             String pdfTemplateStr = CommonUtils.replacePlaceholders(template.getText(), templateMapObject);
-          //  logger.info("map values {}", pdfTemplateStr.contains("#current_date"));
-           // logger.info("map values {}", today);
+            //  logger.info("map values {}", pdfTemplateStr.contains("#current_date"));
+            // logger.info("map values {}", today);
             String pdfTemplateStr1 = pdfTemplateStr.replace("#current_date", today);
 
             Document document = Jsoup.parse(pdfTemplateStr1, "UTF-8");

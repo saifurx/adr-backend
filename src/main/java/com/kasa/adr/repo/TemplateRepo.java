@@ -20,6 +20,7 @@ public interface TemplateRepo extends MongoRepository<Template, String> {
 
     @Query("{'type' : ?0}")
     List<Template> findAllByType(String type);
+
     @Query("{ 'name' : ?0, 'type' : ?1}")
     List<Template> findByNameAndType(String name, String type);
 

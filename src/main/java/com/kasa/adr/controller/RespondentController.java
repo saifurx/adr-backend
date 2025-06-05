@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -34,25 +33,26 @@ public class RespondentController {
     S3Service s3Service;
 
     @GetMapping("/test")
-    public String test() {return "test";}
-
+    public String test() {
+        return "test";
+    }
 
 
     @GetMapping("/case")
     public ResponseEntity<Object> cases(@RequestParam String token, @RequestParam String mobile) {
-      if(msg91Service.validateOtpToken(token)) {
-          return new ResponseEntity<>(caseService.getCaseByMobile(mobile), HttpStatus.OK);
-      }
-      return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
+        if (msg91Service.validateOtpToken(token)) {
+            return new ResponseEntity<>(caseService.getCaseByMobile(mobile), HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
 
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam String token,@RequestParam String caseId, @RequestPart(value = "files") final MultipartFile[] multipartFiles) {
-        if(msg91Service.validateOtpToken(token)) {
+    public ResponseEntity<?> uploadFile(@RequestParam String token, @RequestParam String caseId, @RequestPart(value = "files") final MultipartFile[] multipartFiles) {
+        if (msg91Service.validateOtpToken(token)) {
             logger.info("Uploading files");
             List<String> responses = s3Service.uploadFileToS3(multipartFiles, caseId, "cases");
-            String fileName="";
+            String fileName = "";
             Case aCase = caseService.getOneCase(caseId);
             List<String> documents = aCase.getDocuments();
             documents.add(fileName);
@@ -66,7 +66,6 @@ public class RespondentController {
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
     }
-
 
 
 }

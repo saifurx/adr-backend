@@ -1,7 +1,6 @@
 package com.kasa.adr;
 
 import com.kasa.adr.service.UserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,7 +29,7 @@ public class AdrApplication {
     }
 
 
-    @PostConstruct
+    //  @PostConstruct
     private void addAdminUsers() {
 
         //userService.registerAdmin(User.builder().email("admin@kasadr.com").build());

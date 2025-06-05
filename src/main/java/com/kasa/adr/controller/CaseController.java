@@ -37,10 +37,9 @@ public class CaseController {
                                                              @RequestParam(defaultValue = "createdAt") String sortField,
                                                              @RequestParam(defaultValue = "desc") Sort.Direction sortDirection, @RequestParam String monthYear, @RequestParam String arbitrator, @RequestParam String claimant, @RequestParam String status, @RequestParam String srcStr) {
         Pageable pageable = PageRequest.of(page, sizePerPage, sortDirection, sortField);
-        if(!srcStr.isEmpty()) {
-            return new ResponseEntity<>(caseService.findAllByPage(pageable,srcStr), HttpStatus.OK);
-        }else
-        {
+        if (!srcStr.isEmpty()) {
+            return new ResponseEntity<>(caseService.findAllByPage(pageable, srcStr), HttpStatus.OK);
+        } else {
             Map<String, Object> allByPage = caseService.findAllByPage(pageable, monthYear, arbitrator, claimant, status);
             return new ResponseEntity<>(allByPage, HttpStatus.OK);
         }
@@ -48,11 +47,11 @@ public class CaseController {
     }
 
     @GetMapping("/casesByPage")
-    public Page<Case> casesByPage( @RequestParam String arbitratorId,
-                                   @RequestParam String claimantAdminId,
-                                   @RequestParam String status,
-                                   @RequestParam String monthYear,Pageable pageable) {
-       return caseService.casesByPage(pageable,monthYear,arbitratorId,claimantAdminId,status);
+    public Page<Case> casesByPage(@RequestParam String arbitratorId,
+                                  @RequestParam String claimantAdminId,
+                                  @RequestParam String status,
+                                  @RequestParam String monthYear, Pageable pageable) {
+        return caseService.casesByPage(pageable, monthYear, arbitratorId, claimantAdminId, status);
 
     }
 
@@ -66,6 +65,7 @@ public class CaseController {
     public List<Case> search(@RequestParam String customerId) {
         return caseService.findCaseByCustomerId(customerId);
     }
+
     @PostMapping("/schedule-call")
     public ResponseEntity<?> scheduleCall(@RequestBody CallDetails callDetails) {
         caseService.scheduleCall(callDetails);
@@ -99,7 +99,7 @@ public class CaseController {
 
     @PostMapping("/send-notice")
     public ResponseEntity<?> sendNotice(@RequestBody NoticeRequest noticeRequest) {
-        caseService.sendNotice(noticeRequest.getUploadId(),noticeRequest.getSequence());
+        caseService.sendNotice(noticeRequest.getUploadId(), noticeRequest.getSequence());
         return new ResponseEntity<>("Arbitrator Assigned", HttpStatus.OK);
     }
 }

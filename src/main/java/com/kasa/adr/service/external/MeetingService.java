@@ -14,10 +14,10 @@ public class MeetingService {
 
     //@PostConstruct
     public HttpResponse<String> scheduleMeeting(String scheduledTime, String email, String zuid) {
-        HttpResponse<String> response =null;
+        HttpResponse<String> response = null;
         try {
             String meetingJson = zohoMeeting.getJson(scheduledTime, zuid, email);
-            response =zohoMeeting.scheduleMeeting(meetingJson);
+            response = zohoMeeting.scheduleMeeting(meetingJson);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

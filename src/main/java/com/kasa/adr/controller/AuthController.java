@@ -5,9 +5,6 @@ import com.kasa.adr.config.Constant;
 import com.kasa.adr.dto.ContactUs;
 import com.kasa.adr.dto.LoginRequest;
 import com.kasa.adr.dto.LoginResponse;
-import com.kasa.adr.model.Case;
-import com.kasa.adr.model.CaseAccessToken;
-import com.kasa.adr.model.User;
 import com.kasa.adr.service.AuthenticationService;
 import com.kasa.adr.service.CaseService;
 import com.kasa.adr.service.UserService;
@@ -16,11 +13,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 
@@ -54,7 +48,7 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String userName) {
-        logger.info("Password reset request for: "+userName);
+        logger.info("Password reset request for: " + userName);
         return userService.forgotPassword(userName);
 
     }

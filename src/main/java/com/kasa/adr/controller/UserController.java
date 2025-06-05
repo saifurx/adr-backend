@@ -75,9 +75,10 @@ public class UserController {
     public ResponseEntity<Object> updateInstitution(@PathVariable String id, @RequestBody ClaimantCreateRequest institutionProfile) {
         return new ResponseEntity<>(userService.updateInstitution(id, institutionProfile), HttpStatus.OK);
     }
+
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam String newPassword, @RequestParam String userId) {
-        logger.info("userID :"+userId);
+        logger.info("userID :" + userId);
         return userService.resetPasswordByUserId(newPassword, userId);
     }
 }

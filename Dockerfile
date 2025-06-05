@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.9.9-amazoncorretto-21-debian AS build
+FROM maven:3.9.9-eclipse-temurin-22-alpine AS build
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
@@ -8,7 +8,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:21
+FROM amazoncorretto:22
 WORKDIR /usr/local/lib
 
 # Copy only the final JAR, avoiding unnecessary build artifacts

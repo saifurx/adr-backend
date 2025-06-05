@@ -6,7 +6,6 @@ import com.kasa.adr.dto.DefaulterDetails;
 import com.kasa.adr.dto.TemplateMapObject;
 import com.kasa.adr.model.Address;
 import com.kasa.adr.model.Case;
-import com.kasa.adr.model.Loan;
 import com.kasa.adr.model.User;
 
 import java.lang.reflect.Field;
@@ -56,6 +55,7 @@ public class CommonUtils {
 
         return result;
     }
+
     private static Object getValueFromObject(Object obj, String propertyPath) throws Exception {
         String[] properties = propertyPath.split("\\.");
         Object currentObject = obj;
@@ -116,7 +116,7 @@ public class CommonUtils {
 
     public static void main(String[] args) {
         try {
-            TemplateMapObject placeHoderObj=TemplateMapObject.builder().build();
+            TemplateMapObject placeHoderObj = TemplateMapObject.builder().build();
             placeHoderObj.setDefaulter(DefaulterDetails.builder().name("Saifur").build());
             String replacePlaceholders = replacePlaceholders("Hello ${defaulter.name}", placeHoderObj);
             System.out.println(replacePlaceholders);
@@ -127,9 +127,9 @@ public class CommonUtils {
     }
 
     public static TemplateMapObject getTemplateMapObject(Case aCase) {
-        DefaulterDetails defaulterDetails= getDefaulterDetails(aCase);
-        ClaimantCreateRequest claimant= getClaimant(aCase);
-     //   ArbitratorCreateRequest arbitrator = getArbitrator(aCase);
+        DefaulterDetails defaulterDetails = getDefaulterDetails(aCase);
+        ClaimantCreateRequest claimant = getClaimant(aCase);
+        //   ArbitratorCreateRequest arbitrator = getArbitrator(aCase);
         return TemplateMapObject.builder().defaulter(defaulterDetails).claimant(claimant).build();
     }
 
@@ -148,7 +148,7 @@ public class CommonUtils {
     }
 
     private static DefaulterDetails getDefaulterDetails(Case aCase) {
-        Address address=Address.builder().line1(aCase.getAddress().getLine1()).build();
+        Address address = Address.builder().line1(aCase.getAddress().getLine1()).build();
 
         return DefaulterDetails.builder().name(aCase.getName())
                 .address(address)

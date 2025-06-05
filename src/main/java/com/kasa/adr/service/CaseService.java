@@ -7,7 +7,10 @@ import com.kasa.adr.dto.ArbitratorAssign;
 import com.kasa.adr.dto.CallDetails;
 import com.kasa.adr.dto.EmailDetails;
 import com.kasa.adr.dto.UpdateStatus;
-import com.kasa.adr.model.*;
+import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseHistory;
+import com.kasa.adr.model.Template;
+import com.kasa.adr.model.User;
 import com.kasa.adr.repo.CaseRepository;
 import com.kasa.adr.repo.MeetingDetailsRepo;
 import com.kasa.adr.repo.TemplateRepo;
@@ -63,18 +66,17 @@ public class CaseService {
     public Page<Case> casesByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
 
         Page<Case> cases;
-        if(arbitratorId.isEmpty())
-        {
-            cases=caseRepository.findByClaimantAdmin_IdAndStatus_AndMonthYear(claimantId,status,monthYear,pageable);
-        }else {
-            cases=caseRepository.findByAssignedArbitrator_IdAndClaimantAdmin_IdAndStatus_AndMonthYear(arbitratorId,claimantId,status,monthYear,pageable);
+        if (arbitratorId.isEmpty()) {
+            cases = caseRepository.findByClaimantAdmin_IdAndStatus_AndMonthYear(claimantId, status, monthYear, pageable);
+        } else {
+            cases = caseRepository.findByAssignedArbitrator_IdAndClaimantAdmin_IdAndStatus_AndMonthYear(arbitratorId, claimantId, status, monthYear, pageable);
         }
 
-            return cases;
-        }
+        return cases;
+    }
 
 
-//        public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
+    //        public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
 //            logger.info("Pageble {}" , pageable);
 //        Query query = new Query();
 //        if (!arbitratorId.isEmpty()) query.addCriteria(Criteria.where("assignedArbitrator.id").is(arbitratorId));
@@ -97,49 +99,50 @@ public class CaseService {
 //        result.put("content", cases);
 //        return result;
 //    }
-public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
-    logger.info("Received pagination request: {}", pageable);
+    public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
+        logger.info("Received pagination request: {}", pageable);
 
-    Query query = new Query();
+        Query query = new Query();
 
-    // Adding criteria only if the values are non-empty
-    Optional.ofNullable(arbitratorId)
-            .filter(StringUtils::hasText)
-            .ifPresent(id -> query.addCriteria(Criteria.where("assignedArbitrator.id").is(id)));
+        // Adding criteria only if the values are non-empty
+        Optional.ofNullable(arbitratorId)
+                .filter(StringUtils::hasText)
+                .ifPresent(id -> query.addCriteria(Criteria.where("assignedArbitrator.id").is(id)));
 
-    Optional.ofNullable(claimantId)
-            .filter(StringUtils::hasText)
-            .ifPresent(id -> query.addCriteria(Criteria.where("claimantAdmin.id").is(id)));
+        Optional.ofNullable(claimantId)
+                .filter(StringUtils::hasText)
+                .ifPresent(id -> query.addCriteria(Criteria.where("claimantAdmin.id").is(id)));
 
-    Optional.ofNullable(status)
-            .filter(StringUtils::hasText)
-            .ifPresent(st -> query.addCriteria(Criteria.where("status").is(st)));
+        Optional.ofNullable(status)
+                .filter(StringUtils::hasText)
+                .ifPresent(st -> query.addCriteria(Criteria.where("status").is(st)));
 
-    Optional.ofNullable(monthYear)
-            .filter(StringUtils::hasText)
-            .ifPresent(my -> query.addCriteria(Criteria.where("monthYear").is(my)));
+        Optional.ofNullable(monthYear)
+                .filter(StringUtils::hasText)
+                .ifPresent(my -> query.addCriteria(Criteria.where("monthYear").is(my)));
 
-    long totalItems = mongoTemplate.count(query, Case.class);
-    query.with(Sort.by(Sort.Direction.ASC, "name"));
+        long totalItems = mongoTemplate.count(query, Case.class);
+        query.with(Sort.by(Sort.Direction.ASC, "name"));
 
-    // Applying pagination AFTER counting
-    query.with(pageable);
-    logger.info("Constructed query: {}", query);
+        // Applying pagination AFTER counting
+        query.with(pageable);
+        logger.info("Constructed query: {}", query);
 
-    List<Case> cases = mongoTemplate.find(query, Case.class);
+        List<Case> cases = mongoTemplate.find(query, Case.class);
 
-    // Preparing response map
-    Map<String, Object> result = new HashMap<>();
-    result.put("totalElements", totalItems);
-    result.put("currentPage", pageable.getPageNumber());
-    result.put("pageSize", pageable.getPageSize());
-    result.put("totalPages", (int) Math.ceil((double) totalItems / pageable.getPageSize()));
-    result.put("content", cases);
+        // Preparing response map
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalElements", totalItems);
+        result.put("currentPage", pageable.getPageNumber());
+        result.put("pageSize", pageable.getPageSize());
+        result.put("totalPages", (int) Math.ceil((double) totalItems / pageable.getPageSize()));
+        result.put("content", cases);
 
-    logger.info("Total cases found: {}, Returned cases: {}", totalItems, cases.size());
+        logger.info("Total cases found: {}, Returned cases: {}", totalItems, cases.size());
 
-    return result;
-}
+        return result;
+    }
+
     public Map<String, Object> findAllByPage(Pageable pageable, String srcStr) {
 
         Query query = new Query();
@@ -172,15 +175,15 @@ public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, St
             Case aCase = caseRepository.findById(s).get();
 
             ZonedDateTime zonedDateTime = callDetails.getScheduledTime().atZone(ZoneId.of("Asia/Calcutta"));
-            logger.info("Meeting time :"+zonedDateTime);
+            logger.info("Meeting time :" + zonedDateTime);
             // Define the formatter
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy hh:mm a", Locale.US);
 
             // Format the ZonedDateTime to the desired string
             String formattedDate = zonedDateTime.format(formatter);
-            logger.info("Meeting formattedDate :"+formattedDate);
+            logger.info("Meeting formattedDate :" + formattedDate);
             HttpResponse<String> response = meetingService.scheduleMeeting(formattedDate, aCase.getEmail(), updatedBy.getZuid());
-            if(response.statusCode()==200) {
+            if (response.statusCode() == 200) {
                 String body = response.body();
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode rootNode = null;
@@ -195,10 +198,10 @@ public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, St
                 history.add(CaseHistory.builder().descriptions("Meeting Scheduled By :" + updatedBy.getName()).date(Instant.now()).build());
                 aCase.setHistory(history);
                 caseRepository.save(aCase);
-               // MeetingDetails meetingDetails= MeetingDetails.builder().caseId(aCase.getId()).meetingId().scheduledTime(formattedDate).recodingUrl().build();
+                // MeetingDetails meetingDetails= MeetingDetails.builder().caseId(aCase.getId()).meetingId().scheduledTime(formattedDate).recodingUrl().build();
                 //meetingDetailsRepo.save(meetingDetails);
-            }else{
-                logger.info("Unable to schedule Meeting"+aCase.getCustomerId());
+            } else {
+                logger.info("Unable to schedule Meeting" + aCase.getCustomerId());
             }
 
         }
@@ -293,11 +296,11 @@ public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, St
     }
 
     public void sendNotice(String uploadId, String sequence) {
-       List<Case> cases= caseRepository.findAllByUploadId(uploadId);
-        venkyNotificationService.sendNotice(cases,sequence);
-        cases.stream().forEach(aCase->{
+        List<Case> cases = caseRepository.findAllByUploadId(uploadId);
+        venkyNotificationService.sendNotice(cases, sequence);
+        cases.stream().forEach(aCase -> {
             List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions(sequence+ " Notice Send").date(Instant.now()).build());
+            history.add(CaseHistory.builder().descriptions(sequence + " Notice Send").date(Instant.now()).build());
             aCase.setHistory(history);
             caseRepository.save(aCase);
         });
