@@ -9,9 +9,9 @@ import lombok.Data;
 public class CaseUploadRequest {
 
     String monthYear;
-    String fileName;
+    String processConfigId;
     String claimantAdminId;
-    String remarks;
-    String csvMapperId;
+    String[] arbitrators;
     String userId;
+    String fileName;
 }

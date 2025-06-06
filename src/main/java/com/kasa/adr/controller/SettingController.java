@@ -7,7 +7,8 @@ import com.kasa.adr.model.*;
 import com.kasa.adr.repo.HolidayRepo;
 import com.kasa.adr.repo.SpecializationRepo;
 import com.kasa.adr.repo.TemplateRepo;
-import com.kasa.adr.service.CaseFileProcessingService;
+
+import com.kasa.adr.service.CaseProcessingService;
 import com.kasa.adr.service.UserService;
 import com.kasa.adr.service.external.S3Service;
 import com.kasa.adr.util.CommonUtils;
@@ -49,7 +50,7 @@ public class SettingController {
     S3Service s3Service;
 
     @Autowired
-    CaseFileProcessingService caseFileProcessingService;
+    CaseProcessingService caseFileProcessingService;
 
 
     @PostMapping("/admin")
@@ -160,7 +161,7 @@ public class SettingController {
     }
 
     @GetMapping("/my-uploads/{userId}")
-    public ResponseEntity<List<CaseUploadDetails>> myUploads(@PathVariable String userId) {
+    public List<CaseUploadDetails> myUploads(@PathVariable String userId) {
         return caseFileProcessingService.myUploads(userId);
     }
 

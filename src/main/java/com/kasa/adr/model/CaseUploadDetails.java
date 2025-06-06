@@ -18,16 +18,9 @@ public class CaseUploadDetails {
     String file;
     Instant createdAt;
     String monthYear;
-    String title;
-    @DBRef
     User uploadedBy;
-    String remarks;
-    @DBRef
     User claimantAdmin;
     int total;
-    int success;
-    int failed;
-    String yaml;
-    String errorFile;
-    String status;
+    CaseProcessConfig caseProcessConfig;
+
 }
