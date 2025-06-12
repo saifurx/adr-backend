@@ -1,6 +1,7 @@
 package com.kasa.adr.service.external;
 
 
+import com.kasa.adr.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,5 +193,39 @@ public class S3Service {
 
         }
 
+    }
+
+    public String uploadCaseFile(String caseId, MultipartFile multipartFile, String cases) {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(s3AccessKey, s3SecretKey);
+        // Create S3 client
+        S3Client s3Client = S3Client.builder()
+                .region(Region.of(region))
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .build();
+        File file = convertMultiPartFileToFile(multipartFile);
+        String uniqueFileName = CommonUtils.generateUniqueFileName(file.getName().toLowerCase());
+        try {
+
+                String objectPath = cases + "/" + caseId + "/" + uniqueFileName;
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(objectPath)
+                        .build();
+
+                // Upload the file to S3
+                PutObjectResponse response = s3Client.putObject(putObjectRequest,
+                        Paths.get(file.getPath()));
+
+                logger.info("File uploaded successfully. {}: ", response);
+                 // To remove the file locally created in the project folder.
+
+        } catch (Exception ex) {
+            logger.error("Error= {} while uploading file.", ex.getMessage());
+
+        }finally {
+            file.deleteOnExit();
+            s3Client.close();
+        }
+        return uniqueFileName;
     }
 }

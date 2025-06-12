@@ -48,20 +48,18 @@ public class RespondentController {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam String token, @RequestParam String caseId, @RequestPart(value = "files") final MultipartFile[] multipartFiles) {
+    public ResponseEntity<?> uploadFile(@RequestParam String token, @RequestParam("caseId") String caseId, @RequestParam("file")  MultipartFile multipartFile,@RequestParam("description") String description) {
         if (msg91Service.validateOtpToken(token)) {
             logger.info("Uploading files");
-            List<String> responses = s3Service.uploadFileToS3(multipartFiles, caseId, "cases");
-            String fileName = "";
+            String fileName = s3Service.uploadCaseFile(caseId,multipartFile, "cases");
             Case aCase = caseService.getOneCase(caseId);
             List<String> documents = aCase.getDocuments();
             documents.add(fileName);
             aCase.setDocuments(documents);
             List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions("File Uploaded by Respondent").date(Instant.now()).build());
+            history.add(CaseHistory.builder().descriptions("File Uploaded by Respondent: "+description).date(Instant.now()).build());
             aCase.setHistory(history);
             caseService.save(aCase);
-
             return new ResponseEntity<>(aCase, HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);

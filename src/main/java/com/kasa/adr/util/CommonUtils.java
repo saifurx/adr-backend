@@ -8,11 +8,10 @@ import com.kasa.adr.model.Address;
 import com.kasa.adr.model.Case;
 import com.kasa.adr.model.User;
 
+import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 
 public class CommonUtils {
 
@@ -162,5 +161,13 @@ public class CommonUtils {
                 .loan1(aCase.getLoans().get(0))
                 .invocationRefNo(aCase.getInvocationRefNo())
                 .build();
+    }
+    public static String generateUniqueFileName(String  originalName) {
+        int dotIndex = originalName.lastIndexOf(".");
+        String extension = dotIndex > 0 ? originalName.substring(dotIndex) : "";
+        String uuid = UUID.randomUUID().toString().replace("-", ""); // Remove dashes
+        String fixedName = Instant.now().toEpochMilli() + "_" +uuid.substring(0, Math.min(uuid.length(), 5)); // Truncate or fit
+        return fixedName + extension;
+
     }
 }
