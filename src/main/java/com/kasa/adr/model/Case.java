@@ -1,5 +1,6 @@
 package com.kasa.adr.model;
 
+import com.kasa.adr.dto.Documents;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -37,7 +38,7 @@ public class Case {
     private List<CaseHistory> history = new ArrayList<>();
     String monthYear;
     String status;
-    List<String> documents;
+    List<Documents> documents;
     String amountRecovered;
     String caseUploadDetails;
     String invocationRefNo;

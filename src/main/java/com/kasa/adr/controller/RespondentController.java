@@ -2,6 +2,7 @@ package com.kasa.adr.controller;
 
 
 import com.kasa.adr.config.Constant;
+import com.kasa.adr.dto.Documents;
 import com.kasa.adr.model.Case;
 import com.kasa.adr.model.CaseHistory;
 import com.kasa.adr.service.CaseService;
@@ -53,8 +54,11 @@ public class RespondentController {
             logger.info("Uploading files");
             String fileName = s3Service.uploadCaseFile(caseId,multipartFile, "cases");
             Case aCase = caseService.getOneCase(caseId);
-            List<String> documents = aCase.getDocuments();
-            documents.add(fileName);
+            List<Documents> documents = aCase.getDocuments();
+            if(documents == null) {
+                documents = new java.util.ArrayList<>();
+            }
+            documents.add(Documents.builder().fileName(fileName).description(description).createdAt(Instant.now()).build());
             aCase.setDocuments(documents);
             List<CaseHistory> history = aCase.getHistory();
             history.add(CaseHistory.builder().descriptions("File Uploaded by Respondent: "+description).date(Instant.now()).build());

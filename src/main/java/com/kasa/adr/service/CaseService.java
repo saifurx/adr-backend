@@ -3,10 +3,7 @@ package com.kasa.adr.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasa.adr.dto.ArbitratorAssign;
-import com.kasa.adr.dto.CallDetails;
-import com.kasa.adr.dto.EmailDetails;
-import com.kasa.adr.dto.UpdateStatus;
+import com.kasa.adr.dto.*;
 import com.kasa.adr.model.Case;
 import com.kasa.adr.model.CaseHistory;
 import com.kasa.adr.model.Template;
@@ -232,11 +229,11 @@ public class CaseService {
             if (!updateStatus.getAmountRecovered().isEmpty())
                 aCase.setAmountRecovered(updateStatus.getAmountRecovered());
             if (!updateStatus.getFile().isEmpty()) {
-                List<String> documents = aCase.getDocuments();
+                List<Documents> documents = aCase.getDocuments();
                 if (documents == null) {
                     documents = new ArrayList<>();
                 }
-                documents.add(updateStatus.getFile());
+                documents.add(Documents.builder().fileName(updateStatus.getFile()).description(updateStatus.getDescriptions()).createdAt(Instant.now()).build());
             }
             List<CaseHistory> history = aCase.getHistory();
             history.add(CaseHistory.builder().descriptions(updateStatus.getDescriptions() + " By " + updatedBy.getName()).date(Instant.now()).build());
