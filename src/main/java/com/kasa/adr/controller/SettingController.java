@@ -96,31 +96,34 @@ public class SettingController {
     }
 
     @GetMapping("/template")
-    public List<Template> template(@RequestParam(required = false) String type) {
-        logger.info("Finding template by:" + type);
-        if (type == null || type.isEmpty())
+    public List<Template> template() {
             return templateRepo.findAll();
-        else
-            return templateRepo.findAllByType(type);
+    }
+
+    @GetMapping("/template/{claimantAdminId}")
+    public List<Template> template(@PathVariable String claimantAdminId) {
+        return templateRepo.findByClaimantAdmin(claimantAdminId);
     }
 
     @PostMapping("/template")
     public ResponseEntity<Object> template(@RequestBody TemplateRequest templateRequest) {
-        User user = userService.findUserById(templateRequest.getClaimant());
-        Template template = Template.builder().type(templateRequest.getType()).subject(templateRequest.getSubject()).text(templateRequest.getText()).name(templateRequest.getName()).status(true).createdAt(Instant.now()).claimantAdminUser(user).build();
+        User user = userService.findUserById(templateRequest.getClaimantAdminId());
+        Template template = Template.builder().claimantAdminUser(user).emailSubject(templateRequest.getEmailSubject()).emailBody(templateRequest.getEmailBody()).name(templateRequest.getName()).status(true).createdAt(Instant.now()).smsTemplateId(templateRequest.getSmsTemplateId()).whatsAppTemplateId(templateRequest.getWhatsAppTemplateId()).attachmentText(templateRequest.getAttachmentText()).build();
         return new ResponseEntity<>(templateRepo.save(template), HttpStatus.OK);
     }
 
-    @PatchMapping("/template/{id}")
+    @PutMapping("/template/{id}")
     public ResponseEntity<Object> updateTemplate(@RequestBody TemplateRequest templateRequest, @PathVariable String id) {
-        User user = userService.findUserById(templateRequest.getClaimant());
+        User user = userService.findUserById(templateRequest.getClaimantAdminId());
         Template template = Template.builder()
                 .id(id)
                 .name(templateRequest.getName())
-                .type(templateRequest.getType())
-                .subject(templateRequest.getSubject())
-                .text(templateRequest.getText())
-                .status(true)
+                .emailSubject(templateRequest.getEmailSubject())
+                .emailBody(templateRequest.getEmailBody())
+                .attachmentText(templateRequest.getAttachmentText())
+                .whatsAppTemplateId(templateRequest.getWhatsAppTemplateId())
+                .smsTemplateId(templateRequest.getSmsTemplateId())
+                .status(templateRequest.isStatus())
                 .claimantAdminUser(user)
                 .createdAt(Instant.now())
                 .build();

@@ -15,13 +15,13 @@ public class Template {
     @Id
     String id;
     String name;
-    String type;
-    String subject;
-    String text;
+    String emailSubject;
+    String emailBody;
     String smsTemplateId;
+    String whatsAppTemplateId;
+    String attachmentText;
     Instant createdAt;
     boolean status;
-    String attachmentText;
     @DBRef
     User claimantAdminUser;
 }

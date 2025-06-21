@@ -7,11 +7,13 @@ import lombok.Data;
 @Builder
 public class TemplateRequest {
 
-    String claimant;
+    String claimantAdminId;
     String name;
-    String status;
-    String subject;
-    String text;
-    String type;
+    boolean status;
+    String emailSubject;
+    String emailBody;
+    String smsTemplateId;
+    String whatsAppTemplateId;
+    String attachmentText;
 
 }

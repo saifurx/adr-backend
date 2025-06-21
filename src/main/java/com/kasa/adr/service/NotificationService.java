@@ -59,7 +59,7 @@ public class NotificationService {
             BatchProcessor.processInBatches(cases.stream(), 100, 300, batch -> {
                 logger.info("Processing batch: " + batch);
                 batch.stream().forEach(aCase -> {
-                    processACase(aCase, emailTemplate.get(0).getText(), emailTemplate.get(0).getSubject(), pdfTemplate.get(0).getText());
+                  //  processACase(aCase, emailTemplate.get(0).getText(), emailTemplate.get(0).getSubject(), pdfTemplate.get(0).getText());
 
 
                 });
@@ -108,11 +108,11 @@ public class NotificationService {
         String templateId = "67feb6747d3107230524aa3c";
         Optional<Template> templateRepoById = templateRepo.findById(templateId);
         if (!templateRepoById.isEmpty()) {
-            String pdfStr = templateRepoById.get().getText();
+       //     String pdfStr = templateRepoById.get()//.getText();
             BatchProcessor.processInBatches(cases.stream(), 100, 300, batch -> {
                 logger.info("Processing batch: " + batch);
                 batch.stream().forEach(aCase -> {
-                    processACaseSMS(aCase, pdfStr);
+              //      processACaseSMS(aCase, pdfStr);
 
 
                 });

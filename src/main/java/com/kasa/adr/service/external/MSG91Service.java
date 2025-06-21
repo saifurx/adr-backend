@@ -1,13 +1,17 @@
 package com.kasa.adr.service.external;
 
 
+import com.kasa.adr.controller.AuthController;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MSG91Service {
+    Logger logger = LoggerFactory.getLogger(MSG91Service.class);
 
     public void sendSMS(String mobile, String name, String amount, String url) {
 
@@ -45,7 +49,7 @@ public class MSG91Service {
                     .header("Content-Type", "application/json")
                     .body("{\r\n  \"authkey\": \"443455AzKezrXwS67e1408aP1\",\r\n  \"access-token\": \"" + token + "\"\r\n}")
                     .asString();
-
+            logger.info("Response from MSG91: " + response.getBody());
             if (response.getStatus() == 200) return true;
         } catch (Exception e) {
             e.printStackTrace();

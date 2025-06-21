@@ -57,8 +57,8 @@ public class CaseService {
     @Autowired
     MeetingDetailsRepo meetingDetailsRepo;
 
-    @Autowired
-    VenkyNotificationService venkyNotificationService;
+//    @Autowired
+//    VenkyNotificationService venkyNotificationService;
 
     public Page<Case> casesByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
 
@@ -251,7 +251,7 @@ public class CaseService {
         emailDetails.getCaseIds().forEach(s -> {
             Case aCase = caseRepository.findById(s).get();
             List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions("Email Sent :" + template.getSubject()).date(Instant.now()).build());
+         //   history.add(CaseHistory.builder().descriptions("Email Sent :" + template.getSubject()).date(Instant.now()).build());
             aCase.setHistory(history);
             caseRepository.save(aCase);
         });
@@ -294,7 +294,7 @@ public class CaseService {
 
     public void sendNotice(String uploadId, String sequence) {
         List<Case> cases = caseRepository.findAllByUploadId(uploadId);
-        venkyNotificationService.sendNotice(cases, sequence);
+    //    venkyNotificationService.sendNotice(cases, sequence);
         cases.stream().forEach(aCase -> {
             List<CaseHistory> history = aCase.getHistory();
             history.add(CaseHistory.builder().descriptions(sequence + " Notice Send").date(Instant.now()).build());
