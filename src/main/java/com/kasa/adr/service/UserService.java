@@ -57,12 +57,14 @@ public class UserService {
         profile.setLimitation(loginRequest.getLimitation());
         profile.setSpecialization(loginRequest.getSpecialization());
         profile.setNoOfContestedArbitration(loginRequest.getNoOfContestedArbitration());
+        profile.setZuid(loginRequest.getZuid());
+        profile.setSigImageUrl(loginRequest.getSigImageUrl());
         return profile;
     }
 
     public ResponseEntity<Object> registerArbitratorUser(ArbitratorCreateRequest arbitratorCreateRequest) {
         String password = PasswordGenerator.generatePassword();
-        ArbitratorProfile profile = ArbitratorProfile.builder().specialization(arbitratorCreateRequest.getSpecialization()).noOfContestedArbitration(arbitratorCreateRequest.getNoOfContestedArbitration()).correspondenceAddress(arbitratorCreateRequest.getCorrespondenceAddress()).discloses(arbitratorCreateRequest.getDiscloses()).experience(arbitratorCreateRequest.getExperience()).qualification(arbitratorCreateRequest.getQualification()).limitation(arbitratorCreateRequest.getLimitation()).build();
+        ArbitratorProfile profile = ArbitratorProfile.builder().specialization(arbitratorCreateRequest.getSpecialization()).noOfContestedArbitration(arbitratorCreateRequest.getNoOfContestedArbitration()).correspondenceAddress(arbitratorCreateRequest.getCorrespondenceAddress()).discloses(arbitratorCreateRequest.getDiscloses()).experience(arbitratorCreateRequest.getExperience()).qualification(arbitratorCreateRequest.getQualification()).limitation(arbitratorCreateRequest.getLimitation()).sigImageUrl(arbitratorCreateRequest.getSigImageUrl()).zuid(arbitratorCreateRequest.getZuid()).build();
         User user = User.builder()
                 .email(arbitratorCreateRequest.getEmail())
                 .mobile(arbitratorCreateRequest.getMobile())

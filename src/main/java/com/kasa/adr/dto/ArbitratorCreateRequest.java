@@ -17,6 +17,8 @@ public class ArbitratorCreateRequest {
     private String discloses;
     private String limitation;
     private String profileImageUrl;
+    private String sigImageUrl;
     private String specialization;
     private boolean status;
+    private String zuid;
 }

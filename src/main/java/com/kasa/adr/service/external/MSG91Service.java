@@ -1,7 +1,6 @@
 package com.kasa.adr.service.external;
 
 
-import com.kasa.adr.controller.AuthController;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;

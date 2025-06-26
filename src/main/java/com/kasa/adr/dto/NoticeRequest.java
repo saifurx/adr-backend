@@ -3,10 +3,12 @@ package com.kasa.adr.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Builder
 @Data
 public class NoticeRequest {
-    String uploadId;
-    String sequence;
-
+    List<String> caseIds;
+    String templateId;
+    String userId;
 }

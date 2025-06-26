@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -35,7 +34,6 @@ public class Case {
     String loanRecallNoticeNumber;
     String KASAAppointmentDate;
     String product;
-    private List<CaseHistory> history = new ArrayList<>();
     String monthYear;
     String status;
     List<Documents> documents;

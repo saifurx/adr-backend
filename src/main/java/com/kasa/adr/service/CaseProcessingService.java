@@ -11,7 +11,6 @@ import com.kasa.adr.repo.CaseRepository;
 import com.kasa.adr.repo.CaseUploadDetailsRepo;
 import com.kasa.adr.repo.JobDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

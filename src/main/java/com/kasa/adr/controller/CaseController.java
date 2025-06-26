@@ -2,8 +2,13 @@ package com.kasa.adr.controller;
 
 
 import com.kasa.adr.config.Constant;
-import com.kasa.adr.dto.*;
+import com.kasa.adr.dto.ArbitratorAssign;
+import com.kasa.adr.dto.CallDetails;
+import com.kasa.adr.dto.EmailDetails;
+import com.kasa.adr.dto.UpdateStatus;
 import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseHistoryDetails;
+import com.kasa.adr.service.CaseHistoryDetailsService;
 import com.kasa.adr.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +30,9 @@ public class CaseController {
 
     @Autowired
     CaseService caseService;
+
+    @Autowired
+    CaseHistoryDetailsService caseHistoryDetailsService;
 
     @GetMapping("/{caseId}")
     public Optional<Case> caseDetails(@PathVariable String caseId) {
@@ -80,10 +88,6 @@ public class CaseController {
     }
 
 
-    // @PostMapping("/send-msg")
-    public ResponseEntity<?> sendMsg(@RequestBody MsgDetails msgDetails) {
-        return new ResponseEntity<>("Request Scheduled", HttpStatus.OK);
-    }
 
     @PostMapping("/update-status")
     public ResponseEntity<?> updateStatus(@RequestBody UpdateStatus updateStatus) {
@@ -96,10 +100,9 @@ public class CaseController {
         caseService.assignArbitrator(arbitratorAssign);
         return new ResponseEntity<>("Arbitrator Assigned", HttpStatus.OK);
     }
-
-    @PostMapping("/send-notice")
-    public ResponseEntity<?> sendNotice(@RequestBody NoticeRequest noticeRequest) {
-        caseService.sendNotice(noticeRequest.getUploadId(), noticeRequest.getSequence());
-        return new ResponseEntity<>("Arbitrator Assigned", HttpStatus.OK);
-    }
+   @GetMapping("/case-history/{caseId}")
+    public ResponseEntity<List<CaseHistoryDetails>> getCaseHistory(@PathVariable String caseId) {
+       List<CaseHistoryDetails> caseHistory = caseHistoryDetailsService.findByCaseId(caseId);
+       return new ResponseEntity<>(caseHistory, HttpStatus.OK);
+   }
 }

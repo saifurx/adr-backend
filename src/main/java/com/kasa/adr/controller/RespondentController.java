@@ -5,6 +5,8 @@ import com.kasa.adr.config.Constant;
 import com.kasa.adr.dto.Documents;
 import com.kasa.adr.model.Case;
 import com.kasa.adr.model.CaseHistory;
+import com.kasa.adr.model.CaseHistoryDetails;
+import com.kasa.adr.service.CaseHistoryDetailsService;
 import com.kasa.adr.service.CaseService;
 import com.kasa.adr.service.external.MSG91Service;
 import com.kasa.adr.service.external.S3Service;
@@ -32,6 +34,8 @@ public class RespondentController {
     MSG91Service msg91Service;
     @Autowired
     S3Service s3Service;
+    @Autowired
+    CaseHistoryDetailsService caseHistoryDetailsService;
 
     @GetMapping("/test")
     public String test() {
@@ -60,14 +64,17 @@ public class RespondentController {
             }
             documents.add(Documents.builder().fileName(fileName).description(description).createdAt(Instant.now()).build());
             aCase.setDocuments(documents);
-            List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions("File Uploaded by Respondent: "+description).date(Instant.now()).build());
-            aCase.setHistory(history);
             caseService.save(aCase);
+            //TODO update case history
+            caseHistoryDetailsService.createCaseHistoryDetail(CaseHistoryDetails.builder().createdBy("Respondent").caseId(caseId).description("document uploaded").date(Instant.now()).documentUrl(fileName).build());
             return new ResponseEntity<>(aCase, HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
     }
-
+    @GetMapping("/case-history/{caseId}")
+    public ResponseEntity<List<CaseHistoryDetails>> getCaseHistory(@PathVariable String caseId,@RequestParam String token) {
+        List<CaseHistoryDetails> caseHistory = caseHistoryDetailsService.findByCaseId(caseId);
+        return new ResponseEntity<>(caseHistory, HttpStatus.OK);
+    }
 
 }

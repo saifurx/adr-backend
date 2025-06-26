@@ -18,4 +18,7 @@ public class ArbitratorProfile {
     private String limitation;
     private String category;
     private String specialization;
+    private String zuid;
+    private String sigImageUrl;
+
 }

@@ -7,7 +7,6 @@ import com.kasa.adr.model.*;
 import com.kasa.adr.repo.HolidayRepo;
 import com.kasa.adr.repo.SpecializationRepo;
 import com.kasa.adr.repo.TemplateRepo;
-
 import com.kasa.adr.service.CaseProcessingService;
 import com.kasa.adr.service.UserService;
 import com.kasa.adr.service.external.S3Service;
@@ -179,5 +178,17 @@ public class SettingController {
                 .map(Enum::name)
                 .collect(Collectors.toList());
     }
+
+//    @PostMapping("/send-notice")
+//    public String sendNotice(@RequestBody NoticeRequest noticeRequest) {
+//
+//        List<NotificationRequest> requests = List.of(
+//                NotificationRequest.builder().("Hello via Email", "user1@example.com", NotificationRequest.NotificationChannel.EMAIL),
+//                new NotificationRequest("Hello via SMS", "+123456789", NotificationRequest.NotificationChannel.SMS),
+//                new NotificationRequest("Hello via WhatsApp", "+987654321", NotificationRequest.NotificationChannel.WHATSAPP)
+//        );
+//
+//        return caseFileProcessingService.sendNotice(noticeRequest);
+//    }
 
 }

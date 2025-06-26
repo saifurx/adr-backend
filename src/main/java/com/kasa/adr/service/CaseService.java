@@ -168,8 +168,8 @@ public class CaseService {
     @Async
     public void scheduleCall(CallDetails callDetails) {
         User updatedBy = userRepository.findById(callDetails.getUserId()).get();
-        for (String s : callDetails.getCaseIds()) {
-            Case aCase = caseRepository.findById(s).get();
+        for (String caseId : callDetails.getCaseIds()) {
+            Case aCase = caseRepository.findById(caseId).get();
 
             ZonedDateTime zonedDateTime = callDetails.getScheduledTime().atZone(ZoneId.of("Asia/Calcutta"));
             logger.info("Meeting time :" + zonedDateTime);
@@ -179,7 +179,7 @@ public class CaseService {
             // Format the ZonedDateTime to the desired string
             String formattedDate = zonedDateTime.format(formatter);
             logger.info("Meeting formattedDate :" + formattedDate);
-            HttpResponse<String> response = meetingService.scheduleMeeting(formattedDate, aCase.getEmail(), updatedBy.getZuid());
+            HttpResponse<String> response = meetingService.scheduleMeeting(formattedDate, aCase.getEmail(), updatedBy.getArbitratorProfile().getZuid());
             if (response.statusCode() == 200) {
                 String body = response.body();
                 ObjectMapper mapper = new ObjectMapper();
@@ -190,13 +190,7 @@ public class CaseService {
                     throw new RuntimeException(e);
                 }
                 String joinLink = rootNode.path("session").path("joinLink").asText();
-
-                List<CaseHistory> history = aCase.getHistory();
-                history.add(CaseHistory.builder().descriptions("Meeting Scheduled By :" + updatedBy.getName()).date(Instant.now()).build());
-                aCase.setHistory(history);
-                caseRepository.save(aCase);
-                // MeetingDetails meetingDetails= MeetingDetails.builder().caseId(aCase.getId()).meetingId().scheduledTime(formattedDate).recodingUrl().build();
-                //meetingDetailsRepo.save(meetingDetails);
+                //TODO update case history
             } else {
                 logger.info("Unable to schedule Meeting" + aCase.getCustomerId());
             }
@@ -213,9 +207,7 @@ public class CaseService {
         arbitratorAssign.getCaseIds().forEach(s -> {
             Case aCase = caseRepository.findById(s).get();
             aCase.setAssignedArbitrator(arbitrator);
-            List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions("New Arbitrator " + arbitrator.getName() + " assigned by : " + updatedBy.getName()).date(Instant.now()).build());
-            aCase.setHistory(history);
+        //TODO update case history
             caseRepository.save(aCase);
         });
 
@@ -235,9 +227,7 @@ public class CaseService {
                 }
                 documents.add(Documents.builder().fileName(updateStatus.getFile()).description(updateStatus.getDescriptions()).createdAt(Instant.now()).build());
             }
-            List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions(updateStatus.getDescriptions() + " By " + updatedBy.getName()).date(Instant.now()).build());
-            aCase.setHistory(history);
+           //TODO update case history
             caseRepository.save(aCase);
 
         });
@@ -249,11 +239,7 @@ public class CaseService {
         User updatedBy = userRepository.findById(emailDetails.getUserId()).get();
         Template template = templateRepo.findById(emailDetails.getEmailTemplateId()).get();
         emailDetails.getCaseIds().forEach(s -> {
-            Case aCase = caseRepository.findById(s).get();
-            List<CaseHistory> history = aCase.getHistory();
-         //   history.add(CaseHistory.builder().descriptions("Email Sent :" + template.getSubject()).date(Instant.now()).build());
-            aCase.setHistory(history);
-            caseRepository.save(aCase);
+          //TODO update case history
         });
     }
 
@@ -268,20 +254,7 @@ public class CaseService {
         return mongoTemplate.findDistinct(query, "_id", Case.class, String.class);
     }
 
-    public void updateArbitratorByDefaulter(String caseId, String arbitratorId) {
-        Optional<Case> aCase = caseRepository.findById(caseId);
-        Optional<User> optionalUser = userRepository.findById(arbitratorId);
 
-        if (optionalUser.isPresent() && aCase.isPresent()) {
-            User arbitrator = optionalUser.get();
-            Case case1 = aCase.get();
-            case1.setAssignedArbitrator(arbitrator);
-            List<CaseHistory> history = case1.getHistory();
-            history.add(CaseHistory.builder().descriptions("User has assigned arbitrator :" + arbitrator.getName()).date(Instant.now()).build());
-            case1.setHistory(history);
-            caseRepository.save(case1);
-        }
-    }
 
     public Case getOneCase(String caseId) {
         return caseRepository.findById(caseId).orElseThrow();
@@ -292,16 +265,6 @@ public class CaseService {
         return caseRepository.findCaseByCustomerId(customerId);
     }
 
-    public void sendNotice(String uploadId, String sequence) {
-        List<Case> cases = caseRepository.findAllByUploadId(uploadId);
-    //    venkyNotificationService.sendNotice(cases, sequence);
-        cases.stream().forEach(aCase -> {
-            List<CaseHistory> history = aCase.getHistory();
-            history.add(CaseHistory.builder().descriptions(sequence + " Notice Send").date(Instant.now()).build());
-            aCase.setHistory(history);
-            caseRepository.save(aCase);
-        });
-    }
 
     public List<Case> getCaseByMobile(String mobile) {
         return caseRepository.getCasesByMobile(mobile);

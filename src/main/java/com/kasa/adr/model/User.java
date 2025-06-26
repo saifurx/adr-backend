@@ -49,7 +49,7 @@ public class User implements UserDetails {
 
     String profileImageUrl;
 
-    String zuid;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
