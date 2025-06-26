@@ -1,6 +1,7 @@
-package com.kasa.adr.model;
+package com.kasa.adr.dto;
 
 
+import com.kasa.adr.model.Address;
 import lombok.Builder;
 import lombok.Data;
 

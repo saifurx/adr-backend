@@ -2,10 +2,14 @@ package com.kasa.adr.controller;
 
 
 import com.kasa.adr.config.Constant;
-import com.kasa.adr.dto.*;
-import com.kasa.adr.model.*;
+import com.kasa.adr.dto.CaseUploadRequest;
+import com.kasa.adr.dto.TemplateMapObject;
+import com.kasa.adr.dto.TemplateRequest;
+import com.kasa.adr.model.CaseUploadDetails;
+import com.kasa.adr.model.Holiday;
+import com.kasa.adr.model.Template;
+import com.kasa.adr.model.User;
 import com.kasa.adr.repo.HolidayRepo;
-import com.kasa.adr.repo.SpecializationRepo;
 import com.kasa.adr.repo.TemplateRepo;
 import com.kasa.adr.service.CaseProcessingService;
 import com.kasa.adr.service.UserService;
@@ -20,9 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -41,9 +43,6 @@ public class SettingController {
     @Autowired
     TemplateRepo templateRepo;
 
-    @Autowired
-    SpecializationRepo specializationRepo;
-
 
     @Autowired
     S3Service s3Service;
@@ -52,47 +51,14 @@ public class SettingController {
     CaseProcessingService caseFileProcessingService;
 
 
-    @PostMapping("/admin")
-    public ResponseEntity<Object> createAdmin(@RequestBody AdminCreateRequest loginRequest) {
-        return userService.registerAdmin(loginRequest);
-    }
 
-    @GetMapping("/admin")
-    public ResponseEntity<List<User>> allAdmin() {
-        return new ResponseEntity<>(userService.getAllAdmin(), HttpStatus.OK);
-    }
-
-    @PostMapping("/claimant-team/{claimantAdminUserId}")
-    public ResponseEntity<Object> createClaimantUser(@PathVariable String id, @RequestBody ClaimantCreateRequest claimantCreateRequest) {
-        return userService.createClaimantUser(id, claimantCreateRequest);
-    }
 
     @GetMapping("/claimant-admin")
     public ResponseEntity<List<User>> claimantAdmin() {
         return new ResponseEntity<>(userService.claimantAdmin(), HttpStatus.OK);
     }
 
-    @GetMapping("/claimant-team/{claimantAdminUserId}")
-    public ResponseEntity<List<User>> claimantTeam(@PathVariable String id) {
-        return new ResponseEntity<>(userService.getClaimantUser(id), HttpStatus.OK);
-    }
 
-    @PostMapping("/specialization")
-    public ResponseEntity<Object> createSpecialization(@RequestBody Specialization specialization) {
-        return new ResponseEntity<>(specializationRepo.save(specialization), HttpStatus.OK);
-    }
-
-
-    @GetMapping("/specialization")
-    public ResponseEntity<Object> allSpecialization(@RequestParam(required = false) String searchStr) {
-        return new ResponseEntity<>(specializationRepo.findAll(), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/specialization/{id}")
-    public ResponseEntity<Object> deleteSpecialization(@PathVariable String id) {
-        specializationRepo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @GetMapping("/template")
     public List<Template> template() {
@@ -172,23 +138,5 @@ public class SettingController {
         return CommonUtils.extractFieldNames(TemplateMapObject.class);
     }
 
-    @GetMapping("/template-names")
-    public List<String> templateNames() {
-        return Arrays.stream(TemplateName.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
-    }
-
-//    @PostMapping("/send-notice")
-//    public String sendNotice(@RequestBody NoticeRequest noticeRequest) {
-//
-//        List<NotificationRequest> requests = List.of(
-//                NotificationRequest.builder().("Hello via Email", "user1@example.com", NotificationRequest.NotificationChannel.EMAIL),
-//                new NotificationRequest("Hello via SMS", "+123456789", NotificationRequest.NotificationChannel.SMS),
-//                new NotificationRequest("Hello via WhatsApp", "+987654321", NotificationRequest.NotificationChannel.WHATSAPP)
-//        );
-//
-//        return caseFileProcessingService.sendNotice(noticeRequest);
-//    }
 
 }

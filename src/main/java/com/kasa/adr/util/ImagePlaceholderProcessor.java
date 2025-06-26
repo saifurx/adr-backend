@@ -3,7 +3,8 @@ package com.kasa.adr.util;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 public class ImagePlaceholderProcessor {

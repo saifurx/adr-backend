@@ -20,6 +20,6 @@ public class CaseUploadDetails {
     User uploadedBy;
     User claimantAdmin;
     int total;
-    CaseProcessConfig caseProcessConfig;
+
 
 }

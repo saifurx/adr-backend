@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasa.adr.dto.*;
 import com.kasa.adr.model.Case;
-import com.kasa.adr.model.CaseHistory;
 import com.kasa.adr.model.Template;
 import com.kasa.adr.model.User;
 import com.kasa.adr.repo.CaseRepository;
-import com.kasa.adr.repo.MeetingDetailsRepo;
 import com.kasa.adr.repo.TemplateRepo;
 import com.kasa.adr.repo.UserRepository;
 import com.kasa.adr.service.external.MeetingService;
@@ -54,11 +52,6 @@ public class CaseService {
     private MongoTemplate mongoTemplate;
 
 
-    @Autowired
-    MeetingDetailsRepo meetingDetailsRepo;
-
-//    @Autowired
-//    VenkyNotificationService venkyNotificationService;
 
     public Page<Case> casesByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
 

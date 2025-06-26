@@ -1,6 +1,8 @@
 package com.kasa.adr.model;
 
 
+import com.kasa.adr.dto.ArbitratorProfile;
+import com.kasa.adr.dto.ClaimantProfile;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

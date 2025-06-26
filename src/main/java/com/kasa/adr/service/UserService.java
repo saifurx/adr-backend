@@ -1,7 +1,10 @@
 package com.kasa.adr.service;
 
 import com.kasa.adr.dto.*;
-import com.kasa.adr.model.*;
+import com.kasa.adr.model.PasswordResetToken;
+import com.kasa.adr.model.Role;
+import com.kasa.adr.model.User;
+import com.kasa.adr.model.UserType;
 import com.kasa.adr.repo.PasswordResetTokenRepo;
 import com.kasa.adr.repo.UserRepository;
 import com.kasa.adr.service.external.EmailService;

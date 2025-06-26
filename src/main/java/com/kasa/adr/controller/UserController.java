@@ -56,17 +56,17 @@ public class UserController {
         return new ResponseEntity<>(userService.updateArbitrator(id, loginRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/institution")
+    @PostMapping("/claimant")
     public ResponseEntity<Object> institution(@RequestBody ClaimantCreateRequest createRequest) {
         return userService.newClaimant(createRequest);
     }
 
-    @GetMapping("/institution")
+    @GetMapping("/claimant")
     public ResponseEntity<Object> institution(@RequestParam(required = false) String searchStr) {
         return new ResponseEntity<>(userService.allInstitutions(), HttpStatus.OK);
     }
 
-    @GetMapping("/institution/{id}")
+    @GetMapping("/claimant/{id}")
     public ResponseEntity<Object> institutionById(@PathVariable String id) {
         return new ResponseEntity<>(userService.institutionById(id), HttpStatus.OK);
     }

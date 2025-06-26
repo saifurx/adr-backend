@@ -4,7 +4,6 @@ package com.kasa.adr.controller;
 import com.kasa.adr.config.Constant;
 import com.kasa.adr.dto.Documents;
 import com.kasa.adr.model.Case;
-import com.kasa.adr.model.CaseHistory;
 import com.kasa.adr.model.CaseHistoryDetails;
 import com.kasa.adr.service.CaseHistoryDetailsService;
 import com.kasa.adr.service.CaseService;
