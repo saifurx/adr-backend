@@ -19,6 +19,7 @@ public class CaseUploadDetails {
     String monthYear;
     User uploadedBy;
     User claimantAdmin;
+    String[] arbitratorIds;
     int total;
 
 

@@ -99,6 +99,13 @@ public class EmailService {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if (attachment != null && attachment.exists()) {
+                // Delete the attachment file after sending the email
+                if (!attachment.delete()) {
+                    System.out.println("Failed to delete attachment: " + attachment.getAbsolutePath());
+                }
+            }
         }
     }
 

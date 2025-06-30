@@ -9,7 +9,7 @@ import lombok.Data;
 public class CaseUploadRequest {
 
     String monthYear;
-    String processConfigId;
+    String templateId;
     String claimantAdminId;
     String[] arbitrators;
     String userId;
