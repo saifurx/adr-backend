@@ -14,4 +14,5 @@ public class CaseUploadRequest {
     String[] arbitrators;
     String userId;
     String fileName;
+
 }

@@ -35,7 +35,7 @@ public class CaseProcessingService {
     public void processCaseFile(CaseUploadRequest caseUploadRequest) {
         User user = userRepository.findById(caseUploadRequest.getUserId()).get();
         User climantAdmin =userRepository.findById(caseUploadRequest.getClaimantAdminId()).get();
-        CaseUploadDetails caseUploadDetails=CaseUploadDetails.builder().file(caseUploadRequest.getFileName()).claimantAdmin(climantAdmin).arbitratorIds(caseUploadRequest.getArbitrators()).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).build();
+        CaseUploadDetails caseUploadDetails=CaseUploadDetails.builder().templateId(caseUploadRequest.getTemplateId()).file(caseUploadRequest.getFileName()).claimantAdmin(climantAdmin).arbitratorIds(caseUploadRequest.getArbitrators()).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).build();
 
         caseUploadDetailsRepo.save(caseUploadDetails);
 

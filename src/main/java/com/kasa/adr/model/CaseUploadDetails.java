@@ -20,6 +20,7 @@ public class CaseUploadDetails {
     User uploadedBy;
     User claimantAdmin;
     String[] arbitratorIds;
+    String templateId;
     int total;
 
 
