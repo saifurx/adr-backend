@@ -71,7 +71,7 @@ public class UserController {
         return new ResponseEntity<>(userService.institutionById(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/institution/{id}")
+    @PatchMapping("/claimant/{id}")
     public ResponseEntity<Object> updateInstitution(@PathVariable String id, @RequestBody ClaimantCreateRequest institutionProfile) {
         return new ResponseEntity<>(userService.updateInstitution(id, institutionProfile), HttpStatus.OK);
     }
