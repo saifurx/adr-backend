@@ -75,7 +75,7 @@ public class NotificationService {
         htmlTemplateTxt = htmlTemplateTxt.replace("{{chooseArbitratorLink}}", link);
         File attachment = null;
         try {
-            TemplateMapObject templateMapObject = CommonUtils.getTemplateMapObject(aCase);
+            TemplateMapObject templateMapObject =null;// CommonUtils.getTemplateMapObject(aCase);
             String pdfTemplateStr = CommonUtils.replacePlaceholders(pdfTemplateTxt, templateMapObject);
             String bodyTemplate = CommonUtils.replacePlaceholders(htmlTemplateTxt, templateMapObject);
             //  File inputHTML = new File(pdfTemplateStr);
@@ -124,7 +124,7 @@ public class NotificationService {
     private void processACaseSMS(Case aCase, String pdfStr) {
         File attachment = null;
         try {
-            TemplateMapObject templateMapObject = CommonUtils.getTemplateMapObject(aCase);
+            TemplateMapObject templateMapObject =null;// CommonUtils.getTemplateMapObject(aCase);
             String pdfTemplateStr = CommonUtils.replacePlaceholders(pdfStr, templateMapObject);
             Document document = Jsoup.parse(pdfTemplateStr, "UTF-8");
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);

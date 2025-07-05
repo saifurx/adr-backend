@@ -3,14 +3,85 @@ package com.kasa.adr.dto;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
-@Data
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class TemplateMapObject {
-
-
-    DefaulterDetails defaulter;
-    ArbitratorCreateRequest arbitrator;
-    ClaimantCreateRequest claimant;
-
+    public  static String[] customerLoanFields = {
+            "CUSTOMER_ID",
+            "Customer_Name",
+            "Customer_Address",
+            "cust_email_address",
+            "cust_contact_Number",
+            "coapplicant_name",
+            "coapplicant_address",
+            "coapplicant_email",
+            "coapplicant_mobile",
+            "PRODUCT",
+            "Asset_Description1",
+            "make",
+            "Car_Reg_Number1",
+            "Engine_Number1",
+            "Chasis_Number1",
+            "Tenure_1",
+            "Loan_Number_1",
+            "Disbursal_Date1",
+            "Amount_Finance_LAN_1",
+            "EMI_LAN_1",
+            "Penalty_Charges_1",
+            "Bounce_Charges_1",
+            "Future_Principal_1",
+            "Loan_Number_2",
+            "Disbursal_Date2",
+            "Amount_FinanceLAN_2",
+            "EMI_LAN_2",
+            "Loan2.PenaltyCharges",
+            "Loan2.BounceCharges",
+            "Loan2.FuturePrincipal",
+            "Loan_Recall_Notice_Date",
+            "LRN_Amount",
+            "fc_amount",
+            "Installment_Overdue",
+            "Pending_Emis",
+            "total_claim_amount",
+            "Claim_Amount_in_Word",
+            "Loan_Recall_Notice_Number",
+            "KASA_Appointment_Date",
+            "Commencement_letter_date",
+            "Invocation_Ref_No",
+            "Arbitration_Notice_Dispatch_Date",
+            "Appearance_Date",
+            "Statement_of_Account_Date",
+            "Interim_Order_Date",
+            "Evidence_date",
+            "Award_Date",
+            "customerLoanDetails",
+            "arbitrator.name",
+            "arbitrator.email",
+            "arbitrator.mobile",
+            "arbitrator.correspondenceAddress",
+            "arbitrator.correspondenceAddress.line1",
+            "arbitrator.correspondenceAddress.line2",
+            "arbitrator.correspondenceAddress.pin",
+            "arbitrator.correspondenceAddress.type",
+            "arbitrator.correspondenceAddress.district",
+            "arbitrator.correspondenceAddress.state",
+            "arbitrator.correspondenceAddress.country",
+            "arbitrator.correspondenceAddress.location",
+            "arbitrator.qualification",
+            "arbitrator.experience",
+            "arbitrator.noOfContestedArbitration",
+            "arbitrator.discloses",
+            "arbitrator.limitation",
+            "arbitrator.sigImageUrl",
+            "arbitrator.specialization",
+            "claimant.name",
+            "claimant.branch",
+            "claimant.authorizedPersonName",
+            "claimant.designation",
+            "claimant.email",
+            "claimant.mobile"
+             };
 
 }

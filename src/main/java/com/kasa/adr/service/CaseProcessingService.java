@@ -38,10 +38,18 @@ public class CaseProcessingService {
         CaseUploadDetails caseUploadDetails=CaseUploadDetails.builder().templateId(caseUploadRequest.getTemplateId()).file(caseUploadRequest.getFileName()).claimantAdmin(climantAdmin).arbitratorIds(caseUploadRequest.getArbitrators()).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).build();
 
         caseUploadDetailsRepo.save(caseUploadDetails);
+        //Process the case file and create case objects
+        //List<Case> caseList = getCaseList(caseUploadRequest);
+        //Assign arbitrators to the case
+        //send notifications  to arbitrators
+        //update casehistory details
+        //send first notice in queue - notice pdf, email body, sms body, whats app body
 
     }
 
-
+    private void assingArbitratorsToCase(List<Case> cases, List<String> arbitratorIds) {
+        // Logic to assign arbitrators to the case
+    }
 
     private List<Case> getCaseList(CaseUploadRequest caseUploadRequest) {
     return new ArrayList<>();

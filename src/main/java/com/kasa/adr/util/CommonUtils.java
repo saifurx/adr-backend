@@ -112,25 +112,6 @@ public class CommonUtils {
                 clazz == Character.class;
     }
 
-    public static void main(String[] args) {
-        try {
-            TemplateMapObject placeHoderObj = TemplateMapObject.builder().build();
-            placeHoderObj.setDefaulter(DefaulterDetails.builder().name("Saifur").build());
-            String replacePlaceholders = replacePlaceholders("Hello ${defaulter.name}", placeHoderObj);
-            System.out.println(replacePlaceholders);
-
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static TemplateMapObject getTemplateMapObject(Case aCase) {
-        DefaulterDetails defaulterDetails = getDefaulterDetails(aCase);
-        ClaimantCreateRequest claimant = getClaimant(aCase);
-        //   ArbitratorCreateRequest arbitrator = getArbitrator(aCase);
-        return TemplateMapObject.builder().defaulter(defaulterDetails).claimant(claimant).build();
-    }
-
     private static ArbitratorCreateRequest getArbitrator(Case aCase) {
         return ArbitratorCreateRequest.builder().name(aCase.getAssignedArbitrator().getName()).build();
     }

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -128,15 +130,14 @@ public class SettingController {
         return new ResponseEntity<>("Your file is processing!", HttpStatus.OK);
     }
 
-    @GetMapping("/my-uploads/{userId}")
+    @GetMapping("/upload-csv/{userId}")
     public List<CaseUploadDetails> myUploads(@PathVariable String userId) {
         return caseFileProcessingService.myUploads(userId);
     }
 
     @GetMapping("/template-fields")
     public List<String> templateFields() {
-        return CommonUtils.extractFieldNames(TemplateMapObject.class);
+        return Arrays.asList(TemplateMapObject.customerLoanFields);
+
     }
-
-
 }
