@@ -11,15 +11,12 @@ import java.time.Instant;
 @Data
 @Builder
 @Document
-public class CaseHistoryDetails {
+public class CaseDocuments {
     @Id
     String id;
     String caseId;
-    Instant createdAt;
     String description;
-    String createdBy;
-    String documentUrl;
-    String recordingUrl;
-    String sourceIp;
+    String fileName;
+    Instant createdAt;
 
 }

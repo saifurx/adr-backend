@@ -1,10 +1,5 @@
 package com.kasa.adr.util;
 
-import com.kasa.adr.dto.ArbitratorCreateRequest;
-import com.kasa.adr.dto.ClaimantCreateRequest;
-import com.kasa.adr.dto.DefaulterDetails;
-import com.kasa.adr.model.Address;
-import com.kasa.adr.model.Case;
 import com.kasa.adr.model.User;
 
 import java.lang.reflect.Field;
@@ -111,36 +106,9 @@ public class CommonUtils {
                 clazz == Character.class;
     }
 
-    private static ArbitratorCreateRequest getArbitrator(Case aCase) {
-        return ArbitratorCreateRequest.builder().name(aCase.getAssignedArbitrator().getName()).build();
-    }
 
-    private static ClaimantCreateRequest getClaimant(Case aCase) {
-        return ClaimantCreateRequest.builder()
-                .name(aCase.getClaimantAdmin().getName())
-                .mobile(aCase.getClaimantAdmin().getMobile())
-                .email(aCase.getClaimantAdmin().getEmail())
 
-                .address(aCase.getClaimantAdmin().getInstitutionProfile().getAddress())
-                .build();
-    }
 
-    private static DefaulterDetails getDefaulterDetails(Case aCase) {
-        Address address = Address.builder().line1(aCase.getAddress().getLine1()).build();
-
-        return DefaulterDetails.builder().name(aCase.getName())
-                .address(address)
-                .email(aCase.getEmail())
-                .mobile(aCase.getMobile())
-                .name(aCase.getName())
-                .KASAAppointmentDate(aCase.getKASAAppointmentDate())
-                .loanRecallNoticeNumber(aCase.getLoanRecallNoticeNumber())
-                .loanRecallNoticeDate(aCase.getLoanRecallNoticeDate())
-                .LRNAmount(aCase.getLRNAmount())
-                .loan1(aCase.getLoans().get(0))
-                .invocationRefNo(aCase.getInvocationRefNo())
-                .build();
-    }
 
     public static String generateUniqueFileName(String originalName) {
         int dotIndex = originalName.lastIndexOf(".");

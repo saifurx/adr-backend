@@ -2,8 +2,8 @@ package com.kasa.adr.service;
 
 
 import com.kasa.adr.dto.CaseUploadRequest;
-import com.kasa.adr.model.Case;
 import com.kasa.adr.model.CaseDetails;
+import com.kasa.adr.model.CaseHistoryDetails;
 import com.kasa.adr.model.CaseUploadDetails;
 import com.kasa.adr.model.User;
 import com.kasa.adr.repo.CaseHistoryDetailsRepo;
@@ -19,6 +19,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +71,31 @@ public class CaseProcessingService {
         List<CaseDetails> caseDetailsList = null;
         try {
             caseDetailsList = csvToCaseDetailsMapper.mapCsvToCaseDetails(csvPath);
-            assignRandomArbitrator(caseDetailsList, uploadDetails.getArbitrators());
-            caseRepository.saveAll(caseDetailsList);
+
+            assignRandomArbitrator(caseDetailsList, uploadDetails);
+            List<CaseDetails> cases = caseRepository.saveAll(caseDetailsList);
+
+            cases.stream().forEach(aCase -> {
+                CaseHistoryDetails historyDetails= CaseHistoryDetails.builder()
+                                .caseId(aCase.getId())
+                                .createdAt(Instant.now())
+                                .description("Case Created and Arbitrator Assigned - " + aCase.getAssignedArbitrator().getName())
+                                .createdBy(aCase.getCreatedBy().getName())
+
+                                .build();
+                caseHistoryDetailsRepo.save(historyDetails);
+                    }
+            );
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }finally {
+            try {
+                Files.deleteIfExists(Path.of(csvPath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         logger.info("Processing case file: {}", uploadDetails.getFile());
@@ -87,20 +110,24 @@ public class CaseProcessingService {
         //update casehistory details
     }
 
-    public static void assignRandomArbitrator(List<CaseDetails> caseDetailsList, List<User> users) {
-        if (caseDetailsList == null || users == null || users.isEmpty()) {
+    public static void assignRandomArbitrator(List<CaseDetails> caseDetailsList, CaseUploadDetails caseUploadDetails) {
+        if (caseDetailsList == null || caseUploadDetails.getArbitrators() == null || caseUploadDetails.getArbitrators().isEmpty()) {
             return;
         }
 
         Random random = new Random();
 
         for (CaseDetails caseDetail : caseDetailsList) {
-            User randomUser = users.get(random.nextInt(users.size()));
-            caseDetail.setAssignedArbitrator(randomUser); // Assuming you have this setter
+            User randomUser = caseUploadDetails.getArbitrators().get(random.nextInt(caseUploadDetails.getArbitrators().size()));
+            caseDetail.setAssignedArbitrator(randomUser);
+            caseDetail.setMonthYear(caseUploadDetails.getMonthYear());
+            caseDetail.setCaseUploadDetails(caseUploadDetails.getId());
+            caseDetail.setClaimantAdmin(caseUploadDetails.getClaimantAdmin());
+
         }
     }
 
-    private List<Case> getCaseList(CaseUploadRequest caseUploadRequest) {
+    private List<CaseDetails> getCaseList(CaseUploadRequest caseUploadRequest) {
         return new ArrayList<>();
     }
 

@@ -2,7 +2,7 @@ package com.kasa.adr.service;
 
 import com.kasa.adr.dto.TemplateMapObject;
 import com.kasa.adr.dto.TemplateName;
-import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseDetails;
 import com.kasa.adr.model.Template;
 import com.kasa.adr.repo.CaseRepository;
 import com.kasa.adr.repo.TemplateRepo;
@@ -48,7 +48,7 @@ public class NotificationService {
     MSG91Service smsService;
 
 
-    public void fistDefaulterNotification(List<Case> cases, String claimantId) {
+    public void fistDefaulterNotification(List<CaseDetails> cases, String claimantId) {
         logger.info("Sending Common Notice claimant id=" + claimantId + " TemplateName.Common_Notice.name()" + TemplateName.Commencement_Letter.name());
         List<Template> pdfTemplate = templateRepo.findByNameAndType(TemplateName.Commencement_Letter.name(), "pdf");
         List<Template> emailTemplate = templateRepo.findByNameAndType(TemplateName.Commencement_Letter.name(), "email");
@@ -67,7 +67,7 @@ public class NotificationService {
         }
     }
 
-    private void processACase(Case aCase, String htmlTemplateTxt, String emailSubject, String pdfTemplateTxt) {
+    private void processACase(CaseDetails aCase, String htmlTemplateTxt, String emailSubject, String pdfTemplateTxt) {
         logger.info("Processing aCase {}", aCase);
         //Create Notice PDF from template
         //Create Email Template
@@ -90,7 +90,7 @@ public class NotificationService {
                 builder.withW3cDocument(new W3CDom().fromJsoup(document), "/");
                 builder.run();
             }
-            String to = aCase.getEmail();
+            String to = aCase.getCustomerEmailAddress();
 
             emailService.sendEmailWithAttachment(to, emailSubject, bodyTemplate, attachment);
             //store in s3
@@ -103,7 +103,7 @@ public class NotificationService {
         }
     }
 
-    public void vFirstSMSNotification(List<Case> cases, String claimantId) {
+    public void vFirstSMSNotification(List<CaseDetails> cases, String claimantId) {
         logger.info("Preparing sms notification pdf");
         String templateId = "67feb6747d3107230524aa3c";
         Optional<Template> templateRepoById = templateRepo.findById(templateId);
@@ -121,7 +121,7 @@ public class NotificationService {
 
     }
 
-    private void processACaseSMS(Case aCase, String pdfStr) {
+    private void processACaseSMS(CaseDetails aCase, String pdfStr) {
         File attachment = null;
         try {
             TemplateMapObject templateMapObject = null;// CommonUtils.getTemplateMapObject(aCase);
@@ -140,7 +140,7 @@ public class NotificationService {
             s3Service.uploadSingleFile(attachment, "notice");
             logger.info("file name: " + pdfFilePath);
             String url = "https://virturesolve360.com/pdf?x=" + aCase.getCustomerId();
-            smsService.sendSMS(aCase.getMobile(), aCase.getName(), aCase.getLRNAmount(), url);
+            smsService.sendSMS(aCase.getCustomerContactNumber(), aCase.getCustomerName(), aCase.getLoanRecallNoticeNumber(), url);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

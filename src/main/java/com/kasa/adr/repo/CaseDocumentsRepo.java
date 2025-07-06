@@ -1,6 +1,7 @@
 package com.kasa.adr.repo;
 
-import com.kasa.adr.model.CaseHistoryDetails;
+
+import com.kasa.adr.model.CaseDocuments;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -8,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CaseHistoryDetailsRepo extends MongoRepository<CaseHistoryDetails, String> {
-
-    @Query("{ 'caseId': ?0 }")
-    List<CaseHistoryDetails> findByCaseId(String caseId);
+public interface CaseDocumentsRepo extends MongoRepository<CaseDocuments, String> {
+    @Query("{ 'caseId': ?0 }" )
+    List<CaseDocuments> findByCaseId(String caseId);
 }

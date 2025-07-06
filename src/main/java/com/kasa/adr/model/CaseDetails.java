@@ -1,6 +1,5 @@
 package com.kasa.adr.model;
 
-import com.kasa.adr.dto.Documents;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Comprehensive loan customer data object containing customer information,
