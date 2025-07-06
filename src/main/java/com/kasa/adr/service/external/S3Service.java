@@ -206,23 +206,23 @@ public class S3Service {
         String uniqueFileName = CommonUtils.generateUniqueFileName(file.getName().toLowerCase());
         try {
 
-                String objectPath = cases + "/" + caseId + "/" + uniqueFileName;
-                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                        .bucket(bucket)
-                        .key(objectPath)
-                        .build();
+            String objectPath = cases + "/" + caseId + "/" + uniqueFileName;
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(objectPath)
+                    .build();
 
-                // Upload the file to S3
-                PutObjectResponse response = s3Client.putObject(putObjectRequest,
-                        Paths.get(file.getPath()));
+            // Upload the file to S3
+            PutObjectResponse response = s3Client.putObject(putObjectRequest,
+                    Paths.get(file.getPath()));
 
-                logger.info("File uploaded successfully. {}: ", response);
-                 // To remove the file locally created in the project folder.
+            logger.info("File uploaded successfully. {}: ", response);
+            // To remove the file locally created in the project folder.
 
         } catch (Exception ex) {
             logger.error("Error= {} while uploading file.", ex.getMessage());
 
-        }finally {
+        } finally {
             file.deleteOnExit();
             s3Client.close();
         }

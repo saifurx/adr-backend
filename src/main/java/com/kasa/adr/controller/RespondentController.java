@@ -3,7 +3,7 @@ package com.kasa.adr.controller;
 
 import com.kasa.adr.config.Constant;
 import com.kasa.adr.dto.Documents;
-import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseDetails;
 import com.kasa.adr.model.CaseHistoryDetails;
 import com.kasa.adr.service.CaseHistoryDetailsService;
 import com.kasa.adr.service.CaseService;
@@ -52,13 +52,13 @@ public class RespondentController {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam String token, @RequestParam("caseId") String caseId, @RequestParam("file")  MultipartFile multipartFile,@RequestParam("description") String description) {
+    public ResponseEntity<?> uploadFile(@RequestParam String token, @RequestParam("caseId") String caseId, @RequestParam("file") MultipartFile multipartFile, @RequestParam("description") String description) {
         if (msg91Service.validateOtpToken(token)) {
             logger.info("Uploading files");
-            String fileName = s3Service.uploadCaseFile(caseId,multipartFile, "cases");
-            Case aCase = caseService.getOneCase(caseId);
+            String fileName = s3Service.uploadCaseFile(caseId, multipartFile, "cases");
+            CaseDetails aCase = caseService.getOneCase(caseId);
             List<Documents> documents = aCase.getDocuments();
-            if(documents == null) {
+            if (documents == null) {
                 documents = new java.util.ArrayList<>();
             }
             documents.add(Documents.builder().fileName(fileName).description(description).createdAt(Instant.now()).build());
@@ -70,8 +70,9 @@ public class RespondentController {
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
     }
+
     @GetMapping("/case-history/{caseId}")
-    public ResponseEntity<List<CaseHistoryDetails>> getCaseHistory(@PathVariable String caseId,@RequestParam String token) {
+    public ResponseEntity<List<CaseHistoryDetails>> getCaseHistory(@PathVariable String caseId, @RequestParam String token) {
         List<CaseHistoryDetails> caseHistory = caseHistoryDetailsService.findByCaseId(caseId);
         return new ResponseEntity<>(caseHistory, HttpStatus.OK);
     }

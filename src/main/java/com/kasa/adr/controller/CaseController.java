@@ -6,12 +6,11 @@ import com.kasa.adr.dto.ArbitratorAssign;
 import com.kasa.adr.dto.CallDetails;
 import com.kasa.adr.dto.EmailDetails;
 import com.kasa.adr.dto.UpdateStatus;
-import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseDetails;
 import com.kasa.adr.model.CaseHistoryDetails;
 import com.kasa.adr.service.CaseHistoryDetailsService;
 import com.kasa.adr.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,7 +34,7 @@ public class CaseController {
     CaseHistoryDetailsService caseHistoryDetailsService;
 
     @GetMapping("/{caseId}")
-    public Optional<Case> caseDetails(@PathVariable String caseId) {
+    public Optional<CaseDetails> caseDetails(@PathVariable String caseId) {
         return caseService.findById(caseId);
     }
 
@@ -54,14 +53,14 @@ public class CaseController {
 
     }
 
-    @GetMapping("/casesByPage")
-    public Page<Case> casesByPage(@RequestParam String arbitratorId,
-                                  @RequestParam String claimantAdminId,
-                                  @RequestParam String status,
-                                  @RequestParam String monthYear, Pageable pageable) {
-        return caseService.casesByPage(pageable, monthYear, arbitratorId, claimantAdminId, status);
-
-    }
+//    @GetMapping("/casesByPage")
+//    public Page<CaseDetails> casesByPage(@RequestParam String arbitratorId,
+//                                  @RequestParam String claimantAdminId,
+//                                  @RequestParam String status,
+//                                  @RequestParam String monthYear, Pageable pageable) {
+//        return caseService.casesByPage(pageable, monthYear, arbitratorId, claimantAdminId, status);
+//
+//    }
 
 
     @GetMapping("/case-ids")
@@ -70,7 +69,7 @@ public class CaseController {
     }
 
     @GetMapping("/search")
-    public List<Case> search(@RequestParam String customerId) {
+    public List<CaseDetails> search(@RequestParam String customerId) {
         return caseService.findCaseByCustomerId(customerId);
     }
 
@@ -88,7 +87,6 @@ public class CaseController {
     }
 
 
-
     @PostMapping("/update-status")
     public ResponseEntity<?> updateStatus(@RequestBody UpdateStatus updateStatus) {
         caseService.updateStatus(updateStatus);
@@ -100,9 +98,10 @@ public class CaseController {
         caseService.assignArbitrator(arbitratorAssign);
         return new ResponseEntity<>("Arbitrator Assigned", HttpStatus.OK);
     }
-   @GetMapping("/case-history/{caseId}")
+
+    @GetMapping("/case-history/{caseId}")
     public ResponseEntity<List<CaseHistoryDetails>> getCaseHistory(@PathVariable String caseId) {
-       List<CaseHistoryDetails> caseHistory = caseHistoryDetailsService.findByCaseId(caseId);
-       return new ResponseEntity<>(caseHistory, HttpStatus.OK);
-   }
+        List<CaseHistoryDetails> caseHistory = caseHistoryDetailsService.findByCaseId(caseId);
+        return new ResponseEntity<>(caseHistory, HttpStatus.OK);
+    }
 }

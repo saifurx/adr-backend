@@ -52,7 +52,6 @@ public class User implements UserDetails {
     String profileImageUrl;
 
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

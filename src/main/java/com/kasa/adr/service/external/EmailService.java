@@ -1,7 +1,6 @@
 package com.kasa.adr.service.external;
 
 
-import jakarta.annotation.PostConstruct;
 import jakarta.mail.BodyPart;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
@@ -99,7 +98,7 @@ public class EmailService {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             if (attachment != null && attachment.exists()) {
                 // Delete the attachment file after sending the email
                 if (!attachment.delete()) {
@@ -109,7 +108,7 @@ public class EmailService {
         }
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void sendStartupMail() throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
 

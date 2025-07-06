@@ -43,5 +43,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'userType' : ?0}")
     Page<User> findAllByTypeAndPageable(String userType, Pageable pageable);
 
-
+    @Query("{'id':{$in:?0}}")
+    List<User> findAllByIds(String[] arbitrators);
 }

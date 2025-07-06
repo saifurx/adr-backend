@@ -13,11 +13,12 @@ public class CaseHistoryDetailsService {
     @Autowired
     private CaseHistoryDetailsRepo caseHistoryDetailsRepo;
 
-     public CaseHistoryDetails createCaseHistoryDetail(CaseHistoryDetails details) {
-         return caseHistoryDetailsRepo.save(details);
-     }
-     public List<CaseHistoryDetails> findByCaseId(String caseId) {
-         return caseHistoryDetailsRepo.findByCaseId(caseId);
-     }
+    public CaseHistoryDetails createCaseHistoryDetail(CaseHistoryDetails details) {
+        return caseHistoryDetailsRepo.save(details);
+    }
+
+    public List<CaseHistoryDetails> findByCaseId(String caseId) {
+        return caseHistoryDetailsRepo.findByCaseId(caseId);
+    }
 
 }

@@ -3,7 +3,6 @@ package com.kasa.adr.util;
 import com.kasa.adr.dto.ArbitratorCreateRequest;
 import com.kasa.adr.dto.ClaimantCreateRequest;
 import com.kasa.adr.dto.DefaulterDetails;
-import com.kasa.adr.dto.TemplateMapObject;
 import com.kasa.adr.model.Address;
 import com.kasa.adr.model.Case;
 import com.kasa.adr.model.User;
@@ -142,11 +141,12 @@ public class CommonUtils {
                 .invocationRefNo(aCase.getInvocationRefNo())
                 .build();
     }
-    public static String generateUniqueFileName(String  originalName) {
+
+    public static String generateUniqueFileName(String originalName) {
         int dotIndex = originalName.lastIndexOf(".");
         String extension = dotIndex > 0 ? originalName.substring(dotIndex) : "";
         String uuid = UUID.randomUUID().toString().replace("-", ""); // Remove dashes
-        String fixedName = Instant.now().toEpochMilli() + "_" +uuid.substring(0, Math.min(uuid.length(), 5)); // Truncate or fit
+        String fixedName = Instant.now().toEpochMilli() + "_" + uuid.substring(0, Math.min(uuid.length(), 5)); // Truncate or fit
         return fixedName + extension;
 
     }

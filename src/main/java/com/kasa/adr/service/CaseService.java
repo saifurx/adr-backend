@@ -3,8 +3,12 @@ package com.kasa.adr.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasa.adr.dto.*;
+import com.kasa.adr.dto.ArbitratorAssign;
+import com.kasa.adr.dto.CallDetails;
+import com.kasa.adr.dto.EmailDetails;
+import com.kasa.adr.dto.UpdateStatus;
 import com.kasa.adr.model.Case;
+import com.kasa.adr.model.CaseDetails;
 import com.kasa.adr.model.Template;
 import com.kasa.adr.model.User;
 import com.kasa.adr.repo.CaseRepository;
@@ -14,7 +18,6 @@ import com.kasa.adr.service.external.MeetingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.net.http.HttpResponse;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,18 +54,18 @@ public class CaseService {
     private MongoTemplate mongoTemplate;
 
 
-
-    public Page<Case> casesByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
-
-        Page<Case> cases;
-        if (arbitratorId.isEmpty()) {
-            cases = caseRepository.findByClaimantAdmin_IdAndStatus_AndMonthYear(claimantId, status, monthYear, pageable);
-        } else {
-            cases = caseRepository.findByAssignedArbitrator_IdAndClaimantAdmin_IdAndStatus_AndMonthYear(arbitratorId, claimantId, status, monthYear, pageable);
-        }
-
-        return cases;
-    }
+//
+//    public Page<CaseDetails> casesByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
+//
+//        Page<CaseDetails> cases;
+//        if (arbitratorId.isEmpty()) {
+//            cases = caseRepository.findByClaimantAdmin_IdAndStatus_AndMonthYear(claimantId, status, monthYear, pageable);
+//        } else {
+//            cases = caseRepository.findByAssignedArbitrator_IdAndClaimantAdmin_IdAndStatus_AndMonthYear(arbitratorId, claimantId, status, monthYear, pageable);
+//        }
+//
+//        return cases;
+//    }
 
 
     //        public Map<String, Object> findAllByPage(Pageable pageable, String monthYear, String arbitratorId, String claimantId, String status) {
@@ -118,7 +120,7 @@ public class CaseService {
         query.with(pageable);
         logger.info("Constructed query: {}", query);
 
-        List<Case> cases = mongoTemplate.find(query, Case.class);
+        List<CaseDetails> cases = mongoTemplate.find(query, CaseDetails.class);
 
         // Preparing response map
         Map<String, Object> result = new HashMap<>();
@@ -154,7 +156,7 @@ public class CaseService {
         return result;
     }
 
-    public Optional<Case> findById(String caseId) {
+    public Optional<CaseDetails> findById(String caseId) {
         return caseRepository.findById(caseId);
     }
 
@@ -162,7 +164,7 @@ public class CaseService {
     public void scheduleCall(CallDetails callDetails) {
         User updatedBy = userRepository.findById(callDetails.getUserId()).get();
         for (String caseId : callDetails.getCaseIds()) {
-            Case aCase = caseRepository.findById(caseId).get();
+            CaseDetails aCase = caseRepository.findById(caseId).get();
 
             ZonedDateTime zonedDateTime = callDetails.getScheduledTime().atZone(ZoneId.of("Asia/Calcutta"));
             logger.info("Meeting time :" + zonedDateTime);
@@ -172,7 +174,7 @@ public class CaseService {
             // Format the ZonedDateTime to the desired string
             String formattedDate = zonedDateTime.format(formatter);
             logger.info("Meeting formattedDate :" + formattedDate);
-            HttpResponse<String> response = meetingService.scheduleMeeting(formattedDate, aCase.getEmail(), updatedBy.getArbitratorProfile().getZuid());
+            HttpResponse<String> response = meetingService.scheduleMeeting(formattedDate, aCase.getCustomerEmailAddress(), updatedBy.getArbitratorProfile().getZuid());
             if (response.statusCode() == 200) {
                 String body = response.body();
                 ObjectMapper mapper = new ObjectMapper();
@@ -198,9 +200,9 @@ public class CaseService {
         User updatedBy = userRepository.findById(arbitratorAssign.getUserId()).get();
 
         arbitratorAssign.getCaseIds().forEach(s -> {
-            Case aCase = caseRepository.findById(s).get();
+            CaseDetails aCase = caseRepository.findById(s).get();
             aCase.setAssignedArbitrator(arbitrator);
-        //TODO update case history
+            //TODO update case history
             caseRepository.save(aCase);
         });
 
@@ -209,18 +211,8 @@ public class CaseService {
     public void updateStatus(UpdateStatus updateStatus) {
         User updatedBy = userRepository.findById(updateStatus.getUserId()).get();
         updateStatus.getCaseIds().forEach(s -> {
-            Case aCase = caseRepository.findById(s).get();
-            aCase.setStatus(updateStatus.getStatus());
-            if (!updateStatus.getAmountRecovered().isEmpty())
-                aCase.setAmountRecovered(updateStatus.getAmountRecovered());
-            if (!updateStatus.getFile().isEmpty()) {
-                List<Documents> documents = aCase.getDocuments();
-                if (documents == null) {
-                    documents = new ArrayList<>();
-                }
-                documents.add(Documents.builder().fileName(updateStatus.getFile()).description(updateStatus.getDescriptions()).createdAt(Instant.now()).build());
-            }
-           //TODO update case history
+            CaseDetails aCase = caseRepository.findById(s).get();
+            //TODO update case history
             caseRepository.save(aCase);
 
         });
@@ -232,7 +224,7 @@ public class CaseService {
         User updatedBy = userRepository.findById(emailDetails.getUserId()).get();
         Template template = templateRepo.findById(emailDetails.getEmailTemplateId()).get();
         emailDetails.getCaseIds().forEach(s -> {
-          //TODO update case history
+            //TODO update case history
         });
     }
 
@@ -248,22 +240,21 @@ public class CaseService {
     }
 
 
-
-    public Case getOneCase(String caseId) {
+    public CaseDetails getOneCase(String caseId) {
         return caseRepository.findById(caseId).orElseThrow();
 
     }
 
-    public List<Case> findCaseByCustomerId(String customerId) {
+    public List<CaseDetails> findCaseByCustomerId(String customerId) {
         return caseRepository.findCaseByCustomerId(customerId);
     }
 
 
-    public List<Case> getCaseByMobile(String mobile) {
-        return caseRepository.getCasesByMobile(mobile);
+    public List<CaseDetails> getCaseByMobile(String mobile) {
+        return caseRepository.findCaseByCustomerContactNumber(mobile);
     }
 
-    public void save(Case aCase) {
+    public void save(CaseDetails aCase) {
         caseRepository.save(aCase);
     }
 }

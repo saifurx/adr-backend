@@ -1,14 +1,7 @@
 package com.kasa.adr.dto;
 
-import lombok.Builder;
-import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class TemplateMapObject {
-    public  static String[] customerLoanFields = {
+    public static String[] customerLoanFields = {
             "CUSTOMER_ID",
             "Customer_Name",
             "Customer_Address",
@@ -82,6 +75,6 @@ public class TemplateMapObject {
             "claimant.designation",
             "claimant.email",
             "claimant.mobile"
-             };
+    };
 
 }

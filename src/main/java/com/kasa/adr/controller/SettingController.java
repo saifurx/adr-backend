@@ -14,7 +14,6 @@ import com.kasa.adr.repo.TemplateRepo;
 import com.kasa.adr.service.CaseProcessingService;
 import com.kasa.adr.service.UserService;
 import com.kasa.adr.service.external.S3Service;
-import com.kasa.adr.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,18 +51,15 @@ public class SettingController {
     CaseProcessingService caseFileProcessingService;
 
 
-
-
     @GetMapping("/claimant-admin")
     public ResponseEntity<List<User>> claimantAdmin() {
         return new ResponseEntity<>(userService.claimantAdmin(), HttpStatus.OK);
     }
 
 
-
     @GetMapping("/template")
     public List<Template> template() {
-            return templateRepo.findAll();
+        return templateRepo.findAll();
     }
 
     @GetMapping("/template/{claimantAdminId}")
@@ -130,7 +125,7 @@ public class SettingController {
         return new ResponseEntity<>("Your file is processing!", HttpStatus.OK);
     }
 
-    @GetMapping("/upload-csv/{userId}")
+    @GetMapping("/uploaded-csv/{userId}")
     public List<CaseUploadDetails> myUploads(@PathVariable String userId) {
         return caseFileProcessingService.myUploads(userId);
     }

@@ -3,24 +3,31 @@ package com.kasa.adr.service;
 
 import com.kasa.adr.dto.CaseUploadRequest;
 import com.kasa.adr.model.Case;
-import com.kasa.adr.model.CaseHistoryDetails;
+import com.kasa.adr.model.CaseDetails;
 import com.kasa.adr.model.CaseUploadDetails;
 import com.kasa.adr.model.User;
 import com.kasa.adr.repo.CaseHistoryDetailsRepo;
 import com.kasa.adr.repo.CaseRepository;
 import com.kasa.adr.repo.CaseUploadDetailsRepo;
 import com.kasa.adr.repo.UserRepository;
+import com.kasa.adr.service.external.S3Service;
+import com.kasa.adr.util.CsvToCaseDetailsMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class CaseProcessingService {
-
+    Logger logger = LoggerFactory.getLogger(CaseProcessingService.class);
     @Autowired
     CaseUploadDetailsRepo caseUploadDetailsRepo;
 
@@ -31,28 +38,70 @@ public class CaseProcessingService {
     CaseHistoryDetailsRepo caseHistoryDetailsRepo;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    CsvToCaseDetailsMapper csvToCaseDetailsMapper;
+    @Autowired
+    S3Service s3Service;
 
+    @Async
     public void processCaseFile(CaseUploadRequest caseUploadRequest) {
-        User user = userRepository.findById(caseUploadRequest.getUserId()).get();
-        User climantAdmin =userRepository.findById(caseUploadRequest.getClaimantAdminId()).get();
-        CaseUploadDetails caseUploadDetails=CaseUploadDetails.builder().templateId(caseUploadRequest.getTemplateId()).file(caseUploadRequest.getFileName()).claimantAdmin(climantAdmin).arbitratorIds(caseUploadRequest.getArbitrators()).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).build();
+        List<User> arbitrators = userRepository.findAllByIds(caseUploadRequest.getArbitrators());
+        String claimantAdminId = caseUploadRequest.getClaimantAdminId();
+        Optional<User> claimant = userRepository.findById(claimantAdminId);
+        Optional<User> uploadedBy = userRepository.findById(caseUploadRequest.getUserId());
+        logger.info("claimantAdminId " + claimant + " uploadedBy " + uploadedBy);
+        if (claimant.isPresent() && uploadedBy.isPresent()) {
+            logger.error("User not found for claimantAdminId: {} or userId: {}", claimantAdminId, caseUploadRequest.getUserId());
 
-        caseUploadDetailsRepo.save(caseUploadDetails);
+            CaseUploadDetails caseUploadDetails = CaseUploadDetails.builder().templateId(caseUploadRequest.getTemplateId()).file(caseUploadRequest.getFileName()).claimantAdmin(claimant.get()).arbitrators(arbitrators).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).uploadedBy(uploadedBy.get()).build();
+            CaseUploadDetails uploadDetails = caseUploadDetailsRepo.save(caseUploadDetails);
+            processCSV(uploadDetails);
+        } else {
+            logger.error("Claimant Admin or Uploaded By user not found for claimantAdminId: {} or userId: {}", claimantAdminId, caseUploadRequest.getUserId());
+        }
+    }
+
+    @Async
+    protected void processCSV(CaseUploadDetails uploadDetails) {
+        logger.info("Started Processing");
+        String key = "csv/" + uploadDetails.getUploadedBy().getId() + "/" + uploadDetails.getFile();
+        String csvPath = s3Service.localFilePath(key);
+        List<CaseDetails> caseDetailsList = null;
+        try {
+            caseDetailsList = csvToCaseDetailsMapper.mapCsvToCaseDetails(csvPath);
+            assignRandomArbitrator(caseDetailsList, uploadDetails.getArbitrators());
+            caseRepository.saveAll(caseDetailsList);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        logger.info("Processing case file: {}", uploadDetails.getFile());
         //Process the case file and create case objects
         //List<Case> caseList = getCaseList(caseUploadRequest);
         //Assign arbitrators to the case
+        //Job Trigger
+
         //send notifications  to arbitrators
         //update casehistory details
         //send first notice in queue - notice pdf, email body, sms body, whats app body
-
+        //update casehistory details
     }
 
-    private void assingArbitratorsToCase(List<Case> cases, List<String> arbitratorIds) {
-        // Logic to assign arbitrators to the case
+    public static void assignRandomArbitrator(List<CaseDetails> caseDetailsList, List<User> users) {
+        if (caseDetailsList == null || users == null || users.isEmpty()) {
+            return;
+        }
+
+        Random random = new Random();
+
+        for (CaseDetails caseDetail : caseDetailsList) {
+            User randomUser = users.get(random.nextInt(users.size()));
+            caseDetail.setAssignedArbitrator(randomUser); // Assuming you have this setter
+        }
     }
 
     private List<Case> getCaseList(CaseUploadRequest caseUploadRequest) {
-    return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     public List<CaseUploadDetails> myUploads(String userId) {

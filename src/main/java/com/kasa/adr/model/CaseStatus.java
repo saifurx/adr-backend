@@ -1,6 +1,6 @@
 package com.kasa.adr.model;
 
-public enum CaseStatus{
+public enum CaseStatus {
     OPEN("Open"),
     IN_PROGRESS("In Progress"),
     CLOSED("Closed"),

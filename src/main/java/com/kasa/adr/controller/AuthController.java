@@ -28,7 +28,6 @@ public class AuthController {
     AuthenticationService authenticationService;
 
 
-
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         logger.info("Login for User {}", loginRequest.toString());
