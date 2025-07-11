@@ -11,10 +11,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class CsvToCaseDetailsMapper {
 
+    private static final Logger logger = LoggerFactory.getLogger(CsvToCaseDetailsMapper.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public List<CaseDetails> mapCsvToCaseDetails(String filePath) throws IOException {
@@ -24,13 +27,15 @@ public class CsvToCaseDetailsMapper {
             // Read header line
             String headerLine = br.readLine();
             if (headerLine == null) {
+                logger.error("Empty CSV file: {}", filePath);
                 throw new IOException("Empty CSV file");
             }
 
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split("\t"); // Assuming tab-separated values
-                if (values.length < 42) { // Adjust based on your actual column count
+                String[] values = line.split(","); // Assuming tab-separated values
+                if (values.length < 5) { // Adjust based on your actual column count
+                    logger.warn("Skipping malformed line: {}", line);
                     continue; // Skip malformed lines
                 }
 

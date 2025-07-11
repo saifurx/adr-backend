@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class CaseProcessingService {
@@ -45,6 +46,9 @@ public class CaseProcessingService {
     @Autowired
     S3Service s3Service;
 
+    @Autowired
+    NotificationService notificationService;
+
     @Async
     public void processCaseFile(CaseUploadRequest caseUploadRequest) {
         List<User> arbitrators = userRepository.findAllByIds(caseUploadRequest.getArbitrators());
@@ -54,7 +58,6 @@ public class CaseProcessingService {
         logger.info("claimantAdminId " + claimant + " uploadedBy " + uploadedBy);
         if (claimant.isPresent() && uploadedBy.isPresent()) {
             logger.error("User not found for claimantAdminId: {} or userId: {}", claimantAdminId, caseUploadRequest.getUserId());
-
             CaseUploadDetails caseUploadDetails = CaseUploadDetails.builder().templateId(caseUploadRequest.getTemplateId()).file(caseUploadRequest.getFileName()).claimantAdmin(claimant.get()).arbitrators(arbitrators).monthYear(caseUploadRequest.getMonthYear()).createdAt(Instant.now()).uploadedBy(uploadedBy.get()).build();
             CaseUploadDetails uploadDetails = caseUploadDetailsRepo.save(caseUploadDetails);
             processCSV(uploadDetails);
@@ -66,12 +69,15 @@ public class CaseProcessingService {
     @Async
     protected void processCSV(CaseUploadDetails uploadDetails) {
         logger.info("Started Processing");
-        String key = "csv/" + uploadDetails.getUploadedBy().getId() + "/" + uploadDetails.getFile();
+        String key = "csv/" + uploadDetails.getClaimantAdmin().getId() + "/" + uploadDetails.getFile();
         String csvPath = s3Service.localFilePath(key);
         List<CaseDetails> caseDetailsList = null;
         try {
             caseDetailsList = csvToCaseDetailsMapper.mapCsvToCaseDetails(csvPath);
-
+            if (caseDetailsList == null || caseDetailsList.isEmpty()) {
+                logger.error("No cases found in the uploaded file: {}", uploadDetails.getFile());
+                return;
+            }
             assignRandomArbitrator(caseDetailsList, uploadDetails);
             List<CaseDetails> cases = caseRepository.saveAll(caseDetailsList);
 
@@ -81,11 +87,12 @@ public class CaseProcessingService {
                                 .createdAt(Instant.now())
                                 .description("Case Created and Arbitrator Assigned - " + aCase.getAssignedArbitrator().getName())
                                 .createdBy(aCase.getCreatedBy().getName())
-
                                 .build();
                 caseHistoryDetailsRepo.save(historyDetails);
                     }
             );
+            List<String> caseIds = cases.stream().map(c -> c.getId()).collect(Collectors.toList());
+            notificationService.sendNotice(caseIds, uploadDetails.getTemplateId());
 
 
         } catch (IOException e) {
@@ -103,6 +110,7 @@ public class CaseProcessingService {
         //List<Case> caseList = getCaseList(caseUploadRequest);
         //Assign arbitrators to the case
         //Job Trigger
+
 
         //send notifications  to arbitrators
         //update casehistory details
@@ -123,6 +131,8 @@ public class CaseProcessingService {
             caseDetail.setMonthYear(caseUploadDetails.getMonthYear());
             caseDetail.setCaseUploadDetails(caseUploadDetails.getId());
             caseDetail.setClaimantAdmin(caseUploadDetails.getClaimantAdmin());
+            caseDetail.setCreatedBy(caseUploadDetails.getUploadedBy());
+           // caseDetail.setCreatedAt(Instant.now());
 
         }
     }

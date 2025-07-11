@@ -108,4 +108,18 @@ public class CaseController {
         List<CaseDocuments> documents = caseDocumentsRepo.findByCaseId(caseId);
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
+
+    @PostMapping("/send-notice")
+    public ResponseEntity<?> sendNotice(@RequestParam(value = "caseIds", required = false) String[] caseIds, @RequestParam(value = "file",required = false) MultipartFile multipartFile, @RequestParam("templateId") String templateId, @RequestParam("userId") String userId) {
+        if (multipartFile.isEmpty()) {
+            return new ResponseEntity<>("File is empty", HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> updatedBy = userRepository.findById(userId);
+        if (updatedBy.isEmpty()) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+       caseService.sendNotice(caseIds, multipartFile, templateId, updatedBy.get());
+        return new ResponseEntity<>("Notice sent!", HttpStatus.OK);
+    }
+
 }

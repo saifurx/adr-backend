@@ -1,6 +1,7 @@
 package com.kasa.adr.service.external;
 
 
+import com.kasa.adr.model.CaseDetails;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -54,5 +55,12 @@ public class MSG91Service {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void sendSMSByTemplateId(CaseDetails aCase, String pdfFilePath, String smsTemplateId) {
+    }
+
+    public void sendWhatsAppMsgTemplateId(CaseDetails aCase, String pdfFilePath, String whatsAppTemplateId) {
+
     }
 }

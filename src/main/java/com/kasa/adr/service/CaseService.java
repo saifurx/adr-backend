@@ -221,4 +221,9 @@ public class CaseService {
             caseDocumentsRepo.save(caseDocuments);
         }
     }
+
+    public void sendNotice(String[] caseIds, MultipartFile multipartFile, String templateId, User user) {
+
+
+    }
 }
