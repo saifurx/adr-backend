@@ -35,8 +35,9 @@ public class MSG91Service {
                     .header("authkey", "443455AzKezrXwS67e1408aP1")
                     .header("accept", "application/json")
                     .header("content-type", "application/json")
-                    .body("{\n  \"template_id\": \""+smsTemplateId+"\",\n  \"short_url\": \"1\",\n  \"short_url_expiry\": \"680000\",\n  \"realTimeResponse\": \"1\", \n  \"recipients\": [\n    {\n      \"mobiles\": \"91" + aCase.getCustomerContactNumber() + "\",\n\"var1\": \"" + aCase.getClaimantAdmin().getName() + "\"}]}")
+                    .body("{\n  \"template_id\": \""+smsTemplateId+"\",\n  \"short_url\": \"0\",\n  \"short_url_expiry\": \"680000\",\n  \"realTimeResponse\": \"1\", \n  \"recipients\": [\n    {\n      \"mobiles\": \"91" + aCase.getCustomerContactNumber() + "\",\n\"var1\": \"" + aCase.getClaimantAdmin().getName() + "\"}]}")
                     .asString();
+            logger.info("SMS sent successfully to " + aCase.getCustomerContactNumber() + " with template ID: " + smsTemplateId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,6 +52,7 @@ public class MSG91Service {
                     .header("Cookie", "HELLO_APP_HASH=cnNJZEY0NFpyRXVPUUEvcnBvcC9zeVhZa1h0T0xHc3VnMWgrREU0bHBjMD0%3D; PHPSESSID=44iv8qrcm7m5ejirsg1i069710")
                     .body("{\r\n\"integrated_number\": \"919644889954\",\r\n\"content_type\":\"template\",\r\n\"payload\": {\r\n\"messaging_product\": \"whatsapp\",\r\n\"type\": \"template\",\r\n\"template\": {\r\n\"name\": \""+whatsAppTemplateId+"\",\r\n\"language\": {\r\n\"code\": \"en\",\r\n\"policy\": \"deterministic\"\r\n},\r\n\"namespace\": \"025f31c8_fbdf_4146_ac4c_3c90a9285fb4\",\r\n\"to_and_components\": [\r\n{\r\n\"to\": [\r\n\"91" + aCase.getCustomerContactNumber() + "\"\r\n],\r\n\"components\": {\r\n\"body_1\": {\r\n\"type\": \"text\",\r\n\"value\": \"" + aCase.getCustomerName() + "\"\r\n},\r\n\"body_2\": {\r\n\"type\": \"text\",\r\n\"value\": \"" + aCase.getClaimantAdmin().getName() + "\"\r\n}}")
                     .asString();
+            logger.info("WhatsApp message sent successfully to " + aCase.getCustomerContactNumber() + " with template ID: " + whatsAppTemplateId);
         } catch (UnirestException e) {
             throw new RuntimeException(e);
         }
