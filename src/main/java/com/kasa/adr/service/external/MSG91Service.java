@@ -50,11 +50,63 @@ public class MSG91Service {
                     .header("Content-Type", "application/json")
                     .header("authkey", "443455AzKezrXwS67e1408aP1")
                     .header("Cookie", "HELLO_APP_HASH=cnNJZEY0NFpyRXVPUUEvcnBvcC9zeVhZa1h0T0xHc3VnMWgrREU0bHBjMD0%3D; PHPSESSID=44iv8qrcm7m5ejirsg1i069710")
-                    .body("{\r\n\"integrated_number\": \"919644889954\",\r\n\"content_type\":\"template\",\r\n\"payload\": {\r\n\"messaging_product\": \"whatsapp\",\r\n\"type\": \"template\",\r\n\"template\": {\r\n\"name\": \""+whatsAppTemplateId+"\",\r\n\"language\": {\r\n\"code\": \"en\",\r\n\"policy\": \"deterministic\"\r\n},\r\n\"namespace\": \"025f31c8_fbdf_4146_ac4c_3c90a9285fb4\",\r\n\"to_and_components\": [\r\n{\r\n\"to\": [\r\n\"91" + aCase.getCustomerContactNumber() + "\"\r\n],\r\n\"components\": {\r\n\"body_1\": {\r\n\"type\": \"text\",\r\n\"value\": \"" + aCase.getCustomerName() + "\"\r\n},\r\n\"body_2\": {\r\n\"type\": \"text\",\r\n\"value\": \"" + aCase.getClaimantAdmin().getName() + "\"\r\n}}")
+                    .body(buildWhatsAppJson(whatsAppTemplateId, aCase.getCustomerContactNumber(),aCase.getCustomerName(),aCase.getClaimantAdmin().getName()))
                     .asString();
             logger.info("WhatsApp message sent successfully to " + aCase.getCustomerContactNumber() + " with template ID: " + whatsAppTemplateId);
         } catch (UnirestException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static String buildWhatsAppJson(String whatsAppTemplateId, String customerNumber,
+                                           String customerName, String adminName) {
+        StringBuilder json = new StringBuilder();
+        json.append("{\r\n")
+                .append("\"integrated_number\": \"919644889954\",\r\n")
+                .append("\"content_type\": \"template\",\r\n")
+                .append("\"payload\": {\r\n")
+                .append("\"messaging_product\": \"whatsapp\",\r\n")
+                .append("\"type\": \"template\",\r\n")
+                .append("\"template\": {\r\n")
+                .append("\"name\": \"").append(whatsAppTemplateId).append("\",\r\n")
+                .append("\"language\": {\r\n")
+                .append("\"code\": \"en\",\r\n")
+                .append("\"policy\": \"deterministic\"\r\n")
+                .append("},\r\n")
+                .append("\"namespace\": \"025f31c8_fbdf_4146_ac4c_3c90a9285fb4\",\r\n")
+                .append("\"to_and_components\": [\r\n")
+                .append("{\r\n")
+                .append("\"to\": [\r\n")
+                .append("\"91").append(customerNumber).append("\"\r\n")
+                .append("],\r\n")
+                .append("\"components\": {\r\n")
+                .append("\"body_1\": {\r\n")
+                .append("\"type\": \"text\",\r\n")
+                .append("\"value\": \"").append(escapeJsonString(customerName)).append("\"\r\n")
+                .append("},\r\n")
+                .append("\"body_2\": {\r\n")
+                .append("\"type\": \"text\",\r\n")
+                .append("\"value\": \"").append(escapeJsonString(adminName)).append("\"\r\n")
+                .append("}\r\n")
+                .append("}\r\n")
+                .append("}\r\n")
+                .append("]\r\n")
+                .append("}\r\n")
+                .append("}\r\n")
+                .append("}");
+
+        return json.toString();
+    }
+    public static String escapeJsonString(String input) {
+        if (input == null) return "";
+        return input.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+                .replace("\t", "\\t");
+    }
+
+    public static void main(String[] args) {
+        MSG91Service msg91Service = new MSG91Service();
+        msg91Service.sendFirstWhatsAppMsgTemplateId(CaseDetails.builder().build(), "","first_arbi_notice_bacl");
     }
 }

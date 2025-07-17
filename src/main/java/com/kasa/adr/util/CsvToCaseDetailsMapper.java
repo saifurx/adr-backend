@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class CsvToCaseDetailsMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(CsvToCaseDetailsMapper.class);
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public List<CaseDetails> mapCsvToCaseDetails(String filePath) throws IOException {
         List<CaseDetails> caseDetailsList = new ArrayList<>();

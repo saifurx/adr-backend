@@ -116,7 +116,7 @@ public class WhatsAppApiClient {
             List<ToAndComponent> toAndComponents = List.of(toAndComponent);
             
             // Send message
-            String response = client.sendBulkMessage("uttara_invocation", toAndComponents);
+            String response = client.sendBulkMessage("first_arbi_notice_bacl", toAndComponents);
             System.out.println("Response: " + response);
             
         } catch (Exception e) {

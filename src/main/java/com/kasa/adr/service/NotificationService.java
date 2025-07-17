@@ -99,7 +99,7 @@ public class NotificationService {
             builder.run();
             s3Service.uploadSingleFile(attachment, "notice");
             if( aCase.getCustomerEmailAddress() != null && !aCase.getCustomerEmailAddress().isEmpty()) {
-              //  emailService.sendEmailWithAttachment(aCase.getCustomerEmailAddress(), emailSubject, emailBody, attachment);
+                emailService.sendEmailWithAttachment(aCase.getCustomerEmailAddress(), emailSubject, emailBody, attachment);
             } else {
                 logger.warn("No email address provided for case ID: {}", aCase.getId());
             }
