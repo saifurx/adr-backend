@@ -85,6 +85,8 @@ public class NotificationService {
         String attachmentText = replacePlaceholdersRegex(template.getAttachmentText(), placeHolderMap);
         String emailBody = replacePlaceholdersRegex(template.getEmailBody(), placeHolderMap);
         String emailSubject = template.getEmailSubject();
+
+
         String pdfFilePath = CommonUtils.generateUniqueFileName(aCase.getCustomerName())+".pdf";
         Document document = Jsoup.parse(attachmentText, "UTF-8");
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
@@ -101,9 +103,9 @@ public class NotificationService {
             } else {
                 logger.warn("No email address provided for case ID: {}", aCase.getId());
             }
-
-            smsService.sendSMSByTemplateId(aCase,pdfFilePath, template.getSmsTemplateId());
-            smsService.sendWhatsAppMsgTemplateId(aCase, pdfFilePath, template.getWhatsAppTemplateId());
+            String url =cloudFrontUrl+"/notice/" + pdfFilePath;
+            smsService.sendFirstSMSByTemplateId(aCase,url, template.getSmsTemplateId());
+            smsService.sendFirstWhatsAppMsgTemplateId(aCase, url, template.getWhatsAppTemplateId());
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -194,7 +196,7 @@ public class NotificationService {
             map.put("arbitrator_qualification", arbitrator.getArbitratorProfile().getQualification());
             map.put("arbitrator_experience", arbitrator.getArbitratorProfile().getExperience());
             if( arbitrator.getArbitratorProfile().getSigImageUrl() != null && !arbitrator.getArbitratorProfile().getSigImageUrl().isEmpty()) {
-                map.put("arbitrator_sigImageUrl", "<img src=\"" + cloudFrontUrl + "/arbitratorImage/signature/" + arbitrator.getArbitratorProfile().getSigImageUrl() + "\" alt=\"Signature Image\" />");
+                map.put("arbitrator_sigImageUrl", "<img src=\"" + cloudFrontUrl + "/arbitrator/sigImageUrl/" + arbitrator.getArbitratorProfile().getSigImageUrl() + "\" alt=\"Signature Image\" style=\"width: 200px; height: 150px;\"/>");
             } else {
                 map.put("arbitrator_sigImageUrl", "No Signature Image Available");
             }

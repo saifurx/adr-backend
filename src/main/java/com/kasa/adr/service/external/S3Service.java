@@ -56,7 +56,7 @@ public class S3Service {
                     responses.add("INVALID_INPUT_FILE_SEQUENCE");
                 }
                 final File file = convertMultiPartFileToFile(multipartFile);
-                final String uniqueFileName = Instant.now().toEpochMilli() + "_" + file.getName().toLowerCase();
+                final String uniqueFileName = CommonUtils.generateUniqueFileName(file.getName().toLowerCase());
                 String objectPath = folder + "/" + id + "/" + uniqueFileName;
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucket)
